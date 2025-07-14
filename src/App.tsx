@@ -23,6 +23,7 @@ const Library = lazy(() => import("./pages/Library"));
 const UserProfile = lazy(() => import("./pages/UserProfile"));
 const SubmitPrompt = lazy(() => import("./pages/SubmitPrompt"));
 const AdminPanel = lazy(() => import("./pages/AdminPanel"));
+const Settings = lazy(() => import("./pages/Settings"));
 
 // Import Layout
 import { Layout } from "@/components/layout/Layout";
@@ -181,6 +182,20 @@ function AppContent() {
                 description="Admin panel for managing prompts, users, and system settings."
               />
               <AdminPanel />
+            </Layout>
+          </Suspense>
+        } 
+      />
+      <Route 
+        path="/settings" 
+        element={
+          <Suspense fallback={<PageLoader />}>
+            <Layout>
+              <SEO 
+                title="Settings - HeyPrompt"
+                description="Account settings and preferences"
+              />
+              <Settings />
             </Layout>
           </Suspense>
         } 
