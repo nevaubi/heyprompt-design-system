@@ -3,11 +3,16 @@ import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
 import { Sun, Moon, Menu, X, Search, BookOpen } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { UserMenu } from '@/components/auth/UserMenu';
+import { AuthModal } from '@/components/auth/AuthModal';
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const { theme, setTheme } = useTheme();
+  const { user } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -106,14 +111,20 @@ export function Header() {
             <span className="sr-only">Toggle theme</span>
           </Button>
 
-          {/* CTA Buttons */}
+          {/* Auth Section */}
           <div className="hidden md:flex items-center space-x-2">
-            <Button variant="ghost" size="sm">
-              Sign In
-            </Button>
-            <Button size="sm" className="bg-gradient-to-r from-primary to-primary-light hover:shadow-glow">
-              Get Started
-            </Button>
+            {user ? (
+              <UserMenu />
+            ) : (
+              <>
+                <Button variant="ghost" size="sm" onClick={() => setShowAuthModal(true)}>
+                  Sign In
+                </Button>
+                <Button size="sm" className="bg-gradient-to-r from-primary to-primary-light hover:shadow-glow" onClick={() => setShowAuthModal(true)}>
+                  Get Started
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -149,16 +160,28 @@ export function Header() {
               </a>
             ))}
             <div className="flex flex-col space-y-2 pt-4 border-t border-border/50">
-              <Button variant="ghost" size="sm">
-                Sign In
-              </Button>
-              <Button size="sm" className="bg-gradient-to-r from-primary to-primary-light">
-                Get Started
-              </Button>
+              {user ? (
+                <UserMenu />
+              ) : (
+                <>
+                  <Button variant="ghost" size="sm" onClick={() => setShowAuthModal(true)}>
+                    Sign In
+                  </Button>
+                  <Button size="sm" className="bg-gradient-to-r from-primary to-primary-light" onClick={() => setShowAuthModal(true)}>
+                    Get Started
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </motion.div>
       )}
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+      />
     </motion.header>
   );
 }

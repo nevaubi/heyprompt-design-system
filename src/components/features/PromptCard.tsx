@@ -14,12 +14,16 @@ import {
   Sparkles
 } from 'lucide-react';
 import { useState } from 'react';
+import { usePromptActions } from '@/hooks/usePromptActions';
+import { AuthModal } from '@/components/auth/AuthModal';
+import { AnonymousLimitModal } from '@/components/auth/AnonymousLimitModal';
 
 interface PromptCardProps {
   prompt: {
     id: string;
     title: string;
     description: string;
+    content?: string;
     whoFor: string[];
     aiModels: string[];
     tokenUsage: 'Low' | 'Medium' | 'High';
@@ -37,10 +41,7 @@ interface PromptCardProps {
     isBookmarked?: boolean;
     isLiked?: boolean;
   };
-  onCardClick: (id: string) => void;
-  onCopy: (id: string) => void;
-  onBookmark: (id: string) => void;
-  onLike: (id: string) => void;
+  onCardClick?: (id: string) => void;
 }
 
 const getTokenUsageColor = (usage: 'Low' | 'Medium' | 'High') => {
@@ -69,11 +70,22 @@ const formatNumber = (num: number): string => {
   return num.toString();
 };
 
-export function PromptCard({ prompt, onCardClick, onCopy, onBookmark, onLike }: PromptCardProps) {
+export function PromptCard({ prompt, onCardClick }: PromptCardProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showLimitModal, setShowLimitModal] = useState(false);
   
   const TokenIcon = getTokenUsageIcon(prompt.tokenUsage);
+  
+  const {
+    handleCopyPrompt,
+    handleLikePrompt,
+    handleBookmarkPrompt,
+  } = usePromptActions({
+    onShowAuthModal: () => setShowAuthModal(true),
+    onShowLimitModal: () => setShowLimitModal(true),
+  });
 
   const handleAction = (e: React.MouseEvent, action: () => void) => {
     e.stopPropagation();
@@ -89,7 +101,7 @@ export function PromptCard({ prompt, onCardClick, onCopy, onBookmark, onLike }: 
         y: -4,
         transition: { type: "spring", stiffness: 400, damping: 17 }
       }}
-      onClick={() => onCardClick(prompt.id)}
+      onClick={() => onCardClick?.(prompt.id)}
       className="cursor-pointer"
     >
       <Card className="h-full glass border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300 group overflow-hidden">
@@ -214,7 +226,7 @@ export function PromptCard({ prompt, onCardClick, onCopy, onBookmark, onLike }: 
                     variant="ghost" 
                     size="sm" 
                     className="w-8 h-8 p-0 hover:bg-primary/10"
-                    onClick={(e) => handleAction(e, () => onCopy(prompt.id))}
+                    onClick={(e) => handleAction(e, () => handleCopyPrompt(prompt.content || prompt.description, prompt.title))}
                   >
                     <Copy className="w-4 h-4" />
                   </Button>
@@ -228,7 +240,7 @@ export function PromptCard({ prompt, onCardClick, onCopy, onBookmark, onLike }: 
                     variant="ghost" 
                     size="sm" 
                     className={`w-8 h-8 p-0 ${prompt.isBookmarked ? 'text-primary' : ''} hover:bg-primary/10`}
-                    onClick={(e) => handleAction(e, () => onBookmark(prompt.id))}
+                    onClick={(e) => handleAction(e, () => handleBookmarkPrompt(prompt.id))}
                   >
                     <Bookmark className={`w-4 h-4 ${prompt.isBookmarked ? 'fill-current' : ''}`} />
                   </Button>
@@ -242,7 +254,7 @@ export function PromptCard({ prompt, onCardClick, onCopy, onBookmark, onLike }: 
                     variant="ghost" 
                     size="sm" 
                     className={`w-8 h-8 p-0 ${prompt.isLiked ? 'text-red-500' : ''} hover:bg-red-50 dark:hover:bg-red-900/20`}
-                    onClick={(e) => handleAction(e, () => onLike(prompt.id))}
+                    onClick={(e) => handleAction(e, () => handleLikePrompt(prompt.id))}
                   >
                     <Heart className={`w-4 h-4 ${prompt.isLiked ? 'fill-current' : ''}`} />
                   </Button>
@@ -260,6 +272,24 @@ export function PromptCard({ prompt, onCardClick, onCopy, onBookmark, onLike }: 
           </div>
         </div>
       </Card>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        title="Sign in to continue"
+        description="Create an account to like prompts, save bookmarks, and join our community."
+      />
+
+      {/* Anonymous Limit Modal */}
+      <AnonymousLimitModal
+        isOpen={showLimitModal}
+        onClose={() => setShowLimitModal(false)}
+        onSignUp={() => {
+          setShowLimitModal(false);
+          setShowAuthModal(true);
+        }}
+      />
     </motion.div>
   );
 }

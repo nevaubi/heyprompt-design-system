@@ -456,9 +456,6 @@ export default function Browse() {
                     key={prompt.id}
                     prompt={prompt}
                     onCardClick={handleCardClick}
-                    onCopy={handleCopy}
-                    onBookmark={handleBookmark}
-                    onLike={handleLike}
                   />
                 ))}
               </motion.div>
