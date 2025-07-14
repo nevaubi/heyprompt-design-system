@@ -81,12 +81,13 @@ export type Database = {
       }
       prompts: {
         Row: {
+          background_color: string | null
           copy_count: number | null
           created_at: string | null
           created_by: string | null
           description: string
+          emoji: string | null
           id: string
-          image_url: string | null
           is_published: boolean | null
           parent_prompt_id: string | null
           prompt_content: string
@@ -97,12 +98,13 @@ export type Database = {
           view_count: number | null
         }
         Insert: {
+          background_color?: string | null
           copy_count?: number | null
           created_at?: string | null
           created_by?: string | null
           description: string
+          emoji?: string | null
           id?: string
-          image_url?: string | null
           is_published?: boolean | null
           parent_prompt_id?: string | null
           prompt_content: string
@@ -113,12 +115,13 @@ export type Database = {
           view_count?: number | null
         }
         Update: {
+          background_color?: string | null
           copy_count?: number | null
           created_at?: string | null
           created_by?: string | null
           description?: string
+          emoji?: string | null
           id?: string
-          image_url?: string | null
           is_published?: boolean | null
           parent_prompt_id?: string | null
           prompt_content?: string

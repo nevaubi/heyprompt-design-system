@@ -27,7 +27,8 @@ interface PromptCardProps {
     whoFor: string[];
     aiModels: string[];
     tokenUsage: 'Low' | 'Medium' | 'High';
-    imageUrl?: string;
+    emoji?: string;
+    background_color?: string;
     saves: number;
     copies: number;
     comments: number;
@@ -69,12 +70,26 @@ const formatNumber = (num: number): string => {
 };
 
 export function PromptCard({ prompt, onCardClick }: PromptCardProps) {
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [imageError, setImageError] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showLimitModal, setShowLimitModal] = useState(false);
   
   const TokenIcon = getTokenUsageIcon(prompt.tokenUsage);
+  
+  const getBackgroundClass = (bgValue?: string) => {
+    const backgroundOptions = {
+      'gradient-blue': 'bg-gradient-to-br from-blue-500 to-purple-600',
+      'gradient-pink': 'bg-gradient-to-br from-pink-500 to-orange-500',
+      'gradient-green': 'bg-gradient-to-br from-green-500 to-teal-600',
+      'gradient-purple': 'bg-gradient-to-br from-purple-500 to-indigo-600',
+      'gradient-orange': 'bg-gradient-to-br from-orange-500 to-red-500',
+      'gradient-cyan': 'bg-gradient-to-br from-cyan-500 to-blue-600',
+      'solid-slate': 'bg-slate-600',
+      'solid-gray': 'bg-gray-600',
+      'solid-emerald': 'bg-emerald-600',
+      'solid-rose': 'bg-rose-600'
+    };
+    return backgroundOptions[bgValue as keyof typeof backgroundOptions] || 'bg-gradient-to-br from-blue-500 to-purple-600';
+  };
   
   const {
     handleCopyPrompt,
@@ -103,43 +118,23 @@ export function PromptCard({ prompt, onCardClick }: PromptCardProps) {
       className="cursor-pointer"
     >
       <Card className="h-full glass border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300 group overflow-hidden">
-        {/* Image Section */}
-        {prompt.imageUrl && (
-          <div className="relative h-48 bg-gradient-to-br from-muted to-muted/50 overflow-hidden">
-            {!imageLoaded && !imageError && (
-              <div className="absolute inset-0 bg-muted animate-pulse" />
-            )}
-            {!imageError && (
-              <img
-                src={prompt.imageUrl}
-                alt={prompt.title}
-                className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ${
-                  imageLoaded ? 'opacity-100' : 'opacity-0'
-                }`}
-                onLoad={() => setImageLoaded(true)}
-                onError={() => setImageError(true)}
-                loading="lazy"
-              />
-            )}
-            {imageError && (
-              <div className="w-full h-full flex items-center justify-center bg-muted">
-                <div className="text-muted-foreground text-sm">No preview</div>
-              </div>
-            )}
-            
-            {/* Token Usage Badge */}
-            <div className="absolute top-3 left-3">
-              <Badge 
-                variant="secondary" 
-                className={`${getTokenUsageColor(prompt.tokenUsage)} text-xs font-medium`}
-              >
-                <TokenIcon className="w-3 h-3 mr-1" />
-                {prompt.tokenUsage}
-              </Badge>
-            </div>
-
+        {/* Emoji Section */}
+        <div className="relative h-48 overflow-hidden">
+          <div className={`w-full h-full flex items-center justify-center group-hover:scale-105 transition-transform duration-300 ${getBackgroundClass(prompt.background_color)}`}>
+            <span className="text-4xl">{prompt.emoji || '🎨'}</span>
           </div>
-        )}
+          
+          {/* Token Usage Badge */}
+          <div className="absolute top-3 left-3">
+            <Badge 
+              variant="secondary" 
+              className={`${getTokenUsageColor(prompt.tokenUsage)} text-xs font-medium backdrop-blur-sm bg-background/80`}
+            >
+              <TokenIcon className="w-3 h-3 mr-1" />
+              {prompt.tokenUsage}
+            </Badge>
+          </div>
+        </div>
 
         <div className="p-6">
           {/* Header */}

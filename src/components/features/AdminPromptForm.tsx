@@ -21,7 +21,8 @@ interface FormData {
   token_usage: string;
   is_published: boolean;
   selectedTags: string[];
-  image_url: string;
+  emoji: string;
+  background_color: string;
 }
 
 export function AdminPromptForm() {
@@ -36,8 +37,28 @@ export function AdminPromptForm() {
     token_usage: 'medium',
     is_published: true,
     selectedTags: [],
-    image_url: ''
+    emoji: '🎨',
+    background_color: 'gradient-blue'
   });
+
+  const emojiOptions = [
+    '🎨', '💻', '🚀', '💡', '🔥', '⚡', '🌟', '🎯', '🧠', '📊',
+    '🎪', '🎭', '🎵', '🎬', '📝', '📚', '🔬', '🧪', '🔧', '⚙️',
+    '🎲', '🎸', '🎹', '🎤', '🎧', '📱', '🖥️', '💰', '📈', '🎮'
+  ];
+
+  const backgroundOptions = [
+    { value: 'gradient-blue', label: 'Blue Gradient', class: 'bg-gradient-to-br from-blue-500 to-purple-600' },
+    { value: 'gradient-pink', label: 'Pink Gradient', class: 'bg-gradient-to-br from-pink-500 to-orange-500' },
+    { value: 'gradient-green', label: 'Green Gradient', class: 'bg-gradient-to-br from-green-500 to-teal-600' },
+    { value: 'gradient-purple', label: 'Purple Gradient', class: 'bg-gradient-to-br from-purple-500 to-indigo-600' },
+    { value: 'gradient-orange', label: 'Orange Gradient', class: 'bg-gradient-to-br from-orange-500 to-red-500' },
+    { value: 'gradient-cyan', label: 'Cyan Gradient', class: 'bg-gradient-to-br from-cyan-500 to-blue-600' },
+    { value: 'solid-slate', label: 'Slate', class: 'bg-slate-600' },
+    { value: 'solid-gray', label: 'Gray', class: 'bg-gray-600' },
+    { value: 'solid-emerald', label: 'Emerald', class: 'bg-emerald-600' },
+    { value: 'solid-rose', label: 'Rose', class: 'bg-rose-600' }
+  ];
 
   useEffect(() => {
     fetchTags();
@@ -91,7 +112,8 @@ export function AdminPromptForm() {
           token_usage: formData.token_usage,
           is_published: formData.is_published,
           created_by: user.id,
-          image_url: formData.image_url.trim() || null
+          emoji: formData.emoji,
+          background_color: formData.background_color
         })
         .select()
         .single();
@@ -125,7 +147,8 @@ export function AdminPromptForm() {
         token_usage: 'medium',
         is_published: true,
         selectedTags: [],
-        image_url: ''
+        emoji: '🎨',
+        background_color: 'gradient-blue'
       });
 
     } catch (error) {
@@ -148,7 +171,8 @@ export function AdminPromptForm() {
       token_usage: 'medium',
       is_published: true,
       selectedTags: [],
-      image_url: ''
+      emoji: '🎨',
+      background_color: 'gradient-blue'
     });
   };
 
@@ -210,14 +234,57 @@ export function AdminPromptForm() {
               </div>
 
               <div>
-                <Label htmlFor="image_url">Image URL (optional)</Label>
-                <Input
-                  id="image_url"
-                  type="url"
-                  value={formData.image_url}
-                  onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))}
-                  placeholder="https://example.com/image.jpg"
-                />
+                <Label htmlFor="emoji">Emoji</Label>
+                <Select
+                  value={formData.emoji}
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, emoji: value }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {emojiOptions.map(emoji => (
+                      <SelectItem key={emoji} value={emoji}>
+                        <span className="text-lg mr-2">{emoji}</span>
+                        {emoji}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="background">Background</Label>
+                <Select
+                  value={formData.background_color}
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, background_color: value }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {backgroundOptions.map(bg => (
+                      <SelectItem key={bg.value} value={bg.value}>
+                        <div className="flex items-center gap-2">
+                          <div className={`w-4 h-4 rounded ${bg.class}`}></div>
+                          {bg.label}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Preview */}
+              <div>
+                <Label>Preview</Label>
+                <div className="mt-2 w-16 h-16 rounded-lg flex items-center justify-center">
+                  <div className={`w-full h-full rounded-lg flex items-center justify-center ${
+                    backgroundOptions.find(bg => bg.value === formData.background_color)?.class || 'bg-gradient-to-br from-blue-500 to-purple-600'
+                  }`}>
+                    <span className="text-2xl">{formData.emoji}</span>
+                  </div>
+                </div>
               </div>
 
               <div className="flex items-center space-x-2">
