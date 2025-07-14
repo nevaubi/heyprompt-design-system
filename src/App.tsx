@@ -8,6 +8,9 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Browse from "./pages/Browse";
 import Auth from "./pages/Auth";
+import Library from "./pages/Library";
+import UserProfile from "./pages/UserProfile";
+import SubmitPrompt from "./pages/SubmitPrompt";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +32,9 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/browse" element={<Browse />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/library" element={<Library />} />
+              <Route path="/submit" element={<SubmitPrompt />} />
+              <Route path="/u/:username" element={<UserProfile />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Settings, BookOpen, LogOut, ChevronDown } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -9,6 +10,7 @@ import { useAuth } from '@/contexts/AuthContext';
 export function UserMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   if (!user) return null;
 
@@ -22,7 +24,7 @@ export function UserMenu() {
   };
 
   const menuItems = [
-    { icon: User, label: 'My Profile', href: '/profile' },
+    { icon: User, label: 'My Profile', href: '/u/username' },
     { icon: BookOpen, label: 'My Library', href: '/library' },
     { icon: Settings, label: 'Settings', href: '/settings' },
   ];
@@ -87,18 +89,20 @@ export function UserMenu() {
                 {/* Menu Items */}
                 <div className="p-1">
                   {menuItems.map((item, index) => (
-                    <motion.a
+                    <motion.button
                       key={item.label}
-                      href={item.href}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: index * 0.05 }}
-                      className="flex items-center space-x-3 px-3 py-2 text-sm text-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors"
-                      onClick={() => setIsOpen(false)}
+                      className="w-full flex items-center space-x-3 px-3 py-2 text-sm text-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors"
+                      onClick={() => {
+                        navigate(item.href);
+                        setIsOpen(false);
+                      }}
                     >
                       <item.icon className="w-4 h-4" />
                       <span>{item.label}</span>
-                    </motion.a>
+                    </motion.button>
                   ))}
                 </div>
 
