@@ -1,79 +1,83 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Star, Copy, ExternalLink } from 'lucide-react';
+import { supabase } from "@/integrations/supabase/client";
 
-const samplePrompts = [
-  {
-    id: 1,
-    title: "Marketing Email Generator",
-    description: "Create compelling marketing emails that convert. Includes subject line suggestions and A/B testing variations.",
-    category: "Marketing",
-    rating: 4.8,
-    reviews: 234,
-    tags: ["Email", "Conversion", "A/B Testing"],
-    image: "photo-1498050108023-c5249f4df085",
-    author: "Sarah Chen"
-  },
-  {
-    id: 2,
-    title: "Code Review Assistant",
-    description: "Get detailed code reviews with suggestions for improvements, best practices, and security considerations.",
-    category: "Development", 
-    rating: 4.9,
-    reviews: 156,
-    tags: ["Code Review", "Best Practices", "Security"],
-    image: "photo-1487058792275-0ad4aaf24ca7",
-    author: "Alex Rodriguez"
-  },
-  {
-    id: 3,
-    title: "Blog Post Outliner",
-    description: "Generate detailed blog post outlines with SEO optimization and reader engagement strategies.",
-    category: "Writing",
-    rating: 4.7,
-    reviews: 89,
-    tags: ["SEO", "Content", "Blogging"],
-    image: "photo-1581091226825-a6a2a5aee158",
-    author: "Emma Thompson"
-  },
-  {
-    id: 4,
-    title: "UI Design Analyzer",
-    description: "Analyze UI designs and get suggestions for improvements in accessibility, usability, and visual hierarchy.",
-    category: "Design",
-    rating: 4.6,
-    reviews: 67,
-    tags: ["UI/UX", "Accessibility", "Design"],
-    image: "photo-1531297484001-80022131f5a1",
-    author: "Michael Park"
-  },
-  {
-    id: 5,
-    title: "Meeting Minutes Generator",
-    description: "Transform meeting recordings into structured minutes with action items and follow-up tasks.",
-    category: "Business",
-    rating: 4.8,
-    reviews: 145,
-    tags: ["Meetings", "Productivity", "AI"],
-    image: "photo-1488590528505-98d2b5aba04b",
-    author: "Lisa Wang"
-  },
-  {
-    id: 6,
-    title: "Learning Path Creator",
-    description: "Design personalized learning paths for any topic with resources, milestones, and progress tracking.",
-    category: "Education",
-    rating: 4.9,
-    reviews: 203,
-    tags: ["Learning", "Education", "Planning"],
-    image: "photo-1649972904349-6e44c42644a7",
-    author: "David Kim"
-  }
-];
+interface SamplePrompt {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  rating: number;
+  reviews: number;
+  tags: string[];
+  image: string;
+  author: string;
+}
 
 export function SamplePrompts() {
+  const [samplePrompts, setSamplePrompts] = useState<SamplePrompt[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchSamplePrompts();
+  }, []);
+
+  const fetchSamplePrompts = async () => {
+    try {
+      setLoading(true);
+      
+      const { data: prompts, error } = await supabase
+        .from('prompts')
+        .select(`
+          *,
+          prompt_tags (
+            tags (
+              name,
+              type
+            )
+          )
+        `)
+        .eq('is_published', true)
+        .order('view_count', { ascending: false })
+        .limit(6);
+
+      if (error) {
+        console.error('Error fetching sample prompts:', error);
+        return;
+      }
+
+      // Transform data to match expected format
+      const transformedPrompts = prompts?.map((prompt, index) => ({
+        id: prompt.id,
+        title: prompt.title,
+        description: prompt.description,
+        category: prompt.prompt_tags?.find(pt => pt.tags.type === 'who_for')?.tags.name || "General",
+        rating: 4.5 + (Math.random() * 0.5), // Randomize between 4.5-5.0
+        reviews: 50 + Math.floor(Math.random() * 200),
+        tags: prompt.prompt_tags?.map(pt => pt.tags.name).slice(0, 3) || [],
+        image: [
+          "photo-1498050108023-c5249f4df085",
+          "photo-1487058792275-0ad4aaf24ca7", 
+          "photo-1581091226825-a6a2a5aee158",
+          "photo-1531297484001-80022131f5a1",
+          "photo-1488590528505-98d2b5aba04b",
+          "photo-1649972904349-6e44c42644a7"
+        ][index % 6],
+        author: "Anonymous" // Will add user profiles later
+      })) || [];
+
+      setSamplePrompts(transformedPrompts);
+    } catch (error) {
+      console.error('Error fetching sample prompts:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -114,14 +118,30 @@ export function SamplePrompts() {
           </p>
         </motion.div>
 
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          {samplePrompts.map((prompt) => (
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="animate-pulse">
+                <Card className="h-full">
+                  <div className="h-48 bg-muted rounded-t-lg"></div>
+                  <div className="p-6 space-y-3">
+                    <div className="h-4 bg-muted rounded w-3/4"></div>
+                    <div className="h-3 bg-muted rounded w-full"></div>
+                    <div className="h-3 bg-muted rounded w-2/3"></div>
+                  </div>
+                </Card>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            {samplePrompts.map((prompt) => (
             <motion.div
               key={prompt.id}
               variants={cardVariants}
@@ -195,8 +215,9 @@ export function SamplePrompts() {
                 </div>
               </Card>
             </motion.div>
-          ))}
-        </motion.div>
+            ))}
+          </motion.div>
+        )}
 
         <motion.div
           className="text-center"

@@ -18,117 +18,26 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-// Mock data for prompts
-const mockPrompts = [
-  {
-    id: '1',
-    title: 'Marketing Email Generator',
-    description: 'Create compelling marketing emails that convert. Includes subject line suggestions and A/B testing variations for maximum engagement.',
-    whoFor: ['Marketers', 'Small Business', 'Agencies'],
-    aiModels: ['GPT-4', 'Claude'],
-    tokenUsage: 'Medium' as const,
-    rating: 4.8,
-    reviewCount: 234,
-    imageUrl: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=200&fit=crop',
-    saves: 1234,
-    copies: 3456,
-    comments: 89,
-    likes: 567,
-    author: { name: 'Sarah Chen', avatar: '' },
-    isBookmarked: false,
-    isLiked: false
-  },
-  {
-    id: '2',
-    title: 'Code Review Assistant',
-    description: 'Get detailed code reviews with suggestions for improvements, best practices, and security considerations for any programming language.',
-    whoFor: ['Developers', 'Team Leads', 'Students'],
-    aiModels: ['GPT-4', 'Claude', 'Gemini'],
-    tokenUsage: 'High' as const,
-    rating: 4.9,
-    reviewCount: 156,
-    imageUrl: 'https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?w=400&h=200&fit=crop',
-    saves: 892,
-    copies: 2103,
-    comments: 67,
-    likes: 445,
-    author: { name: 'Alex Rodriguez', avatar: '' },
-    isBookmarked: true,
-    isLiked: false
-  },
-  {
-    id: '3',
-    title: 'Blog Post Outliner',
-    description: 'Generate detailed blog post outlines with SEO optimization and reader engagement strategies. Perfect for content creators.',
-    whoFor: ['Content Writers', 'Bloggers', 'SEO Specialists'],
-    aiModels: ['GPT-3.5', 'GPT-4'],
-    tokenUsage: 'Low' as const,
-    rating: 4.7,
-    reviewCount: 89,
-    imageUrl: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=200&fit=crop',
-    saves: 678,
-    copies: 1567,
-    comments: 45,
-    likes: 234,
-    author: { name: 'Emma Thompson', avatar: '' },
-    isBookmarked: false,
-    isLiked: true
-  },
-  {
-    id: '4',
-    title: 'UI Design Analyzer',
-    description: 'Analyze UI designs and get suggestions for improvements in accessibility, usability, and visual hierarchy.',
-    whoFor: ['UI Designers', 'UX Designers', 'Product Managers'],
-    aiModels: ['GPT-4', 'Claude'],
-    tokenUsage: 'Medium' as const,
-    rating: 4.6,
-    reviewCount: 67,
-    imageUrl: 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=400&h=200&fit=crop',
-    saves: 543,
-    copies: 987,
-    comments: 34,
-    likes: 189,
-    author: { name: 'Michael Park', avatar: '' },
-    isBookmarked: false,
-    isLiked: false
-  },
-  {
-    id: '5',
-    title: 'Meeting Minutes Generator',
-    description: 'Transform meeting recordings into structured minutes with action items and follow-up tasks.',
-    whoFor: ['Managers', 'Executives', 'Team Leads'],
-    aiModels: ['GPT-4', 'Claude'],
-    tokenUsage: 'High' as const,
-    rating: 4.8,
-    reviewCount: 145,
-    imageUrl: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=400&h=200&fit=crop',
-    saves: 789,
-    copies: 1345,
-    comments: 56,
-    likes: 298,
-    author: { name: 'Lisa Wang', avatar: '' },
-    isBookmarked: true,
-    isLiked: true
-  },
-  {
-    id: '6',
-    title: 'Learning Path Creator',
-    description: 'Design personalized learning paths for any topic with resources, milestones, and progress tracking.',
-    whoFor: ['Educators', 'Students', 'HR Teams'],
-    aiModels: ['GPT-4', 'Gemini'],
-    tokenUsage: 'Medium' as const,
-    rating: 4.9,
-    reviewCount: 203,
-    imageUrl: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=400&h=200&fit=crop',
-    saves: 1067,
-    copies: 2234,
-    comments: 78,
-    likes: 456,
-    author: { name: 'David Kim', avatar: '' },
-    isBookmarked: false,
-    isLiked: false
-  }
-];
+import { supabase } from "@/integrations/supabase/client";
+
+interface BrowsePrompt {
+  id: string;
+  title: string;
+  description: string;
+  whoFor: string[];
+  aiModels: string[];
+  tokenUsage: 'Low' | 'Medium' | 'High';
+  rating: number;
+  reviewCount: number;
+  imageUrl: string;
+  saves: number;
+  copies: number;
+  comments: number;
+  likes: number;
+  author: { name: string; avatar: string };
+  isBookmarked: boolean;
+  isLiked: boolean;
+}
 
 const sortOptions = [
   { value: 'popularity', label: 'Most Popular' },
@@ -139,9 +48,9 @@ const sortOptions = [
 ];
 
 export default function Browse() {
-  const [prompts, setPrompts] = useState(mockPrompts);
-  const [filteredPrompts, setFilteredPrompts] = useState(mockPrompts);
-  const [isLoading, setIsLoading] = useState(false);
+  const [prompts, setPrompts] = useState<BrowsePrompt[]>([]);
+  const [filteredPrompts, setFilteredPrompts] = useState<BrowsePrompt[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('popularity');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -152,6 +61,69 @@ export default function Browse() {
     minRating: 0
   });
   const { toast } = useToast();
+
+  useEffect(() => {
+    fetchPrompts();
+  }, []);
+
+  const fetchPrompts = async () => {
+    try {
+      setIsLoading(true);
+      
+      const { data: prompts, error } = await supabase
+        .from('prompts')
+        .select(`
+          *,
+          prompt_tags (
+            tags (
+              name,
+              type
+            )
+          )
+        `)
+        .eq('is_published', true)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching prompts:', error);
+        return;
+      }
+
+      // Transform data to match expected format
+      const transformedPrompts = prompts?.map((prompt, index) => ({
+        id: prompt.id,
+        title: prompt.title,
+        description: prompt.description,
+        whoFor: prompt.prompt_tags?.filter(pt => pt.tags.type === 'who_for').map(pt => pt.tags.name) || [],
+        aiModels: prompt.prompt_tags?.filter(pt => pt.tags.type === 'ai_model').map(pt => pt.tags.name) || [],
+        tokenUsage: (prompt.token_usage === 'low' ? 'Low' : prompt.token_usage === 'medium' ? 'Medium' : 'High') as 'Low' | 'Medium' | 'High',
+        rating: 4.5 + (Math.random() * 0.5), // Randomize between 4.5-5.0
+        reviewCount: 50 + Math.floor(Math.random() * 200),
+        imageUrl: [
+          'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=200&fit=crop',
+          'https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?w=400&h=200&fit=crop',
+          'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=200&fit=crop',
+          'https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=400&h=200&fit=crop',
+          'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=400&h=200&fit=crop',
+          'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=400&h=200&fit=crop'
+        ][index % 6],
+        saves: Math.floor((prompt.copy_count || 0) / 2),
+        copies: prompt.copy_count || 0,
+        comments: 0, // Will add when comments are implemented
+        likes: prompt.view_count || 0,
+        author: { name: "Anonymous", avatar: "" }, // Will add when user profiles are linked
+        isBookmarked: false,
+        isLiked: false
+      })) || [];
+
+      setPrompts(transformedPrompts);
+      setFilteredPrompts(transformedPrompts);
+    } catch (error) {
+      console.error('Error fetching prompts:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Filter and search logic
   useEffect(() => {
