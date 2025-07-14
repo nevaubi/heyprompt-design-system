@@ -258,16 +258,16 @@ export default function Browse() {
   );
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pt-14 sm:pt-16">
       {/* Header */}
-      <div className="border-b border-border/50 bg-background/80 backdrop-blur-sm sticky top-16 z-40">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+      <div className="border-b border-border/50 bg-background/80 backdrop-blur-sm sticky top-14 sm:top-16 z-40">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-3 sm:space-y-4 lg:space-y-0">
             {/* Title and Search */}
-            <div className="space-y-4 lg:space-y-0 lg:flex lg:items-center lg:space-x-6">
+            <div className="space-y-3 sm:space-y-4 lg:space-y-0 lg:flex lg:items-center lg:space-x-6">
               <div>
-                <h1 className="text-2xl font-bold">Browse Prompts</h1>
-                <p className="text-sm text-muted-foreground">
+                <h1 className="text-xl sm:text-2xl font-bold">Browse Prompts</h1>
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   {filteredPrompts.length} prompts found
                 </p>
               </div>
@@ -279,13 +279,13 @@ export default function Browse() {
                   placeholder="Search prompts..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 glass border-border/50 focus:border-primary/50"
+                  className="pl-10 glass border-border/50 focus:border-primary/50 h-9 sm:h-10 text-sm sm:text-base"
                 />
               </div>
             </div>
 
             {/* Controls */}
-            <div className="flex items-center justify-between lg:justify-end space-x-3">
+            <div className="flex items-center justify-between lg:justify-end space-x-2 sm:space-x-3">
               {/* Mobile Filters */}
               <div className="lg:hidden">
                 <MobileFilters 
@@ -296,8 +296,8 @@ export default function Browse() {
 
               {/* Sort */}
               <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-40 glass border-border/50">
-                  <ArrowUpDown className="w-4 h-4 mr-2" />
+                <SelectTrigger className="w-32 sm:w-40 glass border-border/50 h-9 sm:h-10 text-xs sm:text-sm">
+                  <ArrowUpDown className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -310,22 +310,22 @@ export default function Browse() {
               </Select>
 
               {/* View Toggle */}
-              <div className="hidden md:flex border border-border/50 rounded-lg p-1 glass">
+              <div className="hidden md:flex border border-border/50 rounded-lg p-0.5 sm:p-1 glass">
                 <Button
                   variant={viewMode === 'grid' ? 'default' : 'ghost'}
                   size="sm"
                   onClick={() => setViewMode('grid')}
-                  className="w-8 h-8 p-0"
+                  className="w-7 h-7 sm:w-8 sm:h-8 p-0"
                 >
-                  <Grid3X3 className="w-4 h-4" />
+                  <Grid3X3 className="w-3 h-3 sm:w-4 sm:h-4" />
                 </Button>
                 <Button
                   variant={viewMode === 'list' ? 'default' : 'ghost'}
                   size="sm"
                   onClick={() => setViewMode('list')}
-                  className="w-8 h-8 p-0"
+                  className="w-7 h-7 sm:w-8 sm:h-8 p-0"
                 >
-                  <List className="w-4 h-4" />
+                  <List className="w-3 h-3 sm:w-4 sm:h-4" />
                 </Button>
               </div>
             </div>
@@ -334,13 +334,13 @@ export default function Browse() {
           {/* Active Filters */}
           {getActiveFiltersCount() > 0 && (
             <motion.div 
-              className="flex items-center space-x-2 mt-4 pt-4 border-t border-border/50"
+              className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-border/50"
               initial={{ y: -10, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.3 }}
             >
-              <span className="text-sm text-muted-foreground">Active filters:</span>
-              <div className="flex flex-wrap gap-2">
+              <span className="text-xs sm:text-sm text-muted-foreground shrink-0">Active filters:</span>
+              <div className="flex flex-wrap gap-1.5 sm:gap-2 flex-1">
                 {filters.categories.map((category) => (
                   <Badge key={category} variant="secondary" className="text-xs">
                     {category}
@@ -366,7 +366,7 @@ export default function Browse() {
                 variant="ghost" 
                 size="sm" 
                 onClick={clearAllFilters}
-                className="text-xs h-auto p-1 ml-2"
+                className="text-xs h-auto p-1 sm:ml-2 self-start sm:self-auto"
               >
                 Clear all
               </Button>
@@ -376,11 +376,11 @@ export default function Browse() {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex gap-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+        <div className="flex gap-6 lg:gap-8">
           {/* Desktop Sidebar */}
-          <div className="hidden lg:block w-80 flex-shrink-0">
-            <div className="sticky top-32">
+          <div className="hidden lg:block w-72 xl:w-80 flex-shrink-0">
+            <div className="sticky top-28 xl:top-32">
               <FilterSidebar onFilterChange={handleFilterChange} />
             </div>
           </div>
@@ -388,9 +388,9 @@ export default function Browse() {
           {/* Content Area */}
           <div className="flex-1 min-w-0">
             {isLoading ? (
-              <div className={`grid gap-6 ${
+              <div className={`grid gap-4 sm:gap-6 ${
                 viewMode === 'grid' 
-                  ? 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3' 
+                  ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3' 
                   : 'grid-cols-1'
               }`}>
                 {Array.from({ length: 6 }).map((_, i) => (
@@ -405,9 +405,9 @@ export default function Browse() {
               />
             ) : (
               <motion.div 
-                className={`grid gap-6 ${
+                className={`grid gap-4 sm:gap-6 ${
                   viewMode === 'grid' 
-                    ? 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3' 
+                    ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3' 
                     : 'grid-cols-1'
                 }`}
                 initial="hidden"
@@ -436,7 +436,7 @@ export default function Browse() {
             {/* Load More Button */}
             {!isLoading && filteredPrompts.length > 0 && (
               <motion.div 
-                className="text-center mt-12"
+                className="text-center mt-8 sm:mt-12"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
@@ -444,7 +444,7 @@ export default function Browse() {
                 <Button 
                   variant="outline" 
                   size="lg"
-                  className="glass border-border/50 hover:bg-primary/5"
+                  className="glass border-border/50 hover:bg-primary/5 text-sm sm:text-base px-6 sm:px-8 py-2 sm:py-3"
                 >
                   Load More Prompts
                 </Button>
