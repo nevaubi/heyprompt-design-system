@@ -116,10 +116,7 @@ export function CommentsSection({ promptId, onCommentCountChange }: CommentsSect
           content,
           created_at,
           updated_at,
-          user_id,
-          user_profiles!inner (
-            username
-          )
+          user_id
         `)
         .single();
 
@@ -132,7 +129,7 @@ export function CommentsSection({ promptId, onCommentCountChange }: CommentsSect
         updated_at: data.updated_at,
         user_id: data.user_id,
         author: {
-          username: data.user_profiles.username,
+          username: user.email?.split('@')[0] || 'Anonymous', // Use email prefix as username for now
         },
         replies: [],
       };
