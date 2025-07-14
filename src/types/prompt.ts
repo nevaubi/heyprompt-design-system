@@ -11,8 +11,6 @@ export interface BasePrompt {
   rating?: number;
   reviewCount?: number;
   saves: number;
-  copies: number;
-  comments: number;
   likes: number;
   author: {
     name: string;

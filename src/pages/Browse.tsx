@@ -24,8 +24,7 @@ const sortOptions = [
   { value: 'popularity', label: 'Most Popular' },
   { value: 'rating', label: 'Highest Rated' },
   { value: 'newest', label: 'Newest First' },
-  { value: 'saves', label: 'Most Saved' },
-  { value: 'copies', label: 'Most Copied' }
+  { value: 'saves', label: 'Most Saved' }
 ];
 
 export default function Browse() {
@@ -70,8 +69,29 @@ export default function Browse() {
         return;
       }
 
+      // Get real bookmark and like counts from user_interactions
+      const promptIds = prompts?.map(p => p.id) || [];
+      const { data: interactions } = await supabase
+        .from('user_interactions')
+        .select('prompt_id, interaction_type')
+        .in('prompt_id', promptIds);
+
+      // Count interactions by prompt and type
+      const interactionCounts = interactions?.reduce((acc, interaction) => {
+        const promptId = interaction.prompt_id;
+        if (!acc[promptId]) {
+          acc[promptId] = { saves: 0, likes: 0 };
+        }
+        if (interaction.interaction_type === 'bookmark') {
+          acc[promptId].saves++;
+        } else if (interaction.interaction_type === 'like') {
+          acc[promptId].likes++;
+        }
+        return acc;
+      }, {} as Record<string, { saves: number; likes: number }>) || {};
+
       // Transform data to match expected format
-      const transformedPrompts: PromptCardData[] = prompts?.map((prompt, index) => ({
+      const transformedPrompts: PromptCardData[] = prompts?.map((prompt) => ({
         id: prompt.id,
         title: prompt.title,
         description: prompt.description,
@@ -82,10 +102,8 @@ export default function Browse() {
         reviewCount: 50 + Math.floor(Math.random() * 200),
         emoji: prompt.emoji || '🎨',
         background_color: prompt.background_color || 'gradient-blue',
-        saves: Math.floor((prompt.copy_count || 0) / 2),
-        copies: prompt.copy_count || 0,
-        comments: 0, // Will add when comments are implemented
-        likes: prompt.view_count || 0,
+        saves: interactionCounts[prompt.id]?.saves || 0,
+        likes: interactionCounts[prompt.id]?.likes || 0,
         author: { name: "Anonymous", avatar: "" }, // Will add when user profiles are linked
         isBookmarked: false,
         isLiked: false
@@ -145,10 +163,8 @@ export default function Browse() {
           return parseInt(b.id) - parseInt(a.id);
         case 'saves':
           return b.saves - a.saves;
-        case 'copies':
-          return b.copies - a.copies;
         default: // popularity
-          return (b.saves + b.copies + b.likes) - (a.saves + a.copies + a.likes);
+          return (b.saves + b.likes) - (a.saves + a.likes);
       }
     });
 

@@ -490,13 +490,15 @@ Please provide your feedback in a structured format with specific examples and a
             </Card>
           )}
 
-          {/* Comments Section */}
-          <CommentsSection 
-            promptId={prompt.id}
-            onCommentCountChange={(count) => {
-              setPrompt(prev => prev ? { ...prev, comments: count } : null);
-            }}
-          />
+          {/* Comments Section - Hidden for now */}
+          <div className="hidden">
+            <CommentsSection 
+              promptId={prompt.id}
+              onCommentCountChange={(count) => {
+                setPrompt(prev => prev ? { ...prev, comments: count } : null);
+              }}
+            />
+          </div>
         </div>
 
         {/* Sidebar */}

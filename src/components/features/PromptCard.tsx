@@ -7,8 +7,7 @@ import {
   Star, 
   Copy, 
   Bookmark, 
-  Heart, 
-  MessageCircle,
+  Heart,
   Zap,
   Brain,
   Sparkles
@@ -182,22 +181,16 @@ export function PromptCard({ prompt, onCardClick }: PromptCardProps) {
           <div className="pt-3 border-t border-border/30">
             {/* Stats Row */}
             <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                <div className="flex items-center gap-1">
-                  <Bookmark className="w-3 h-3" />
+              <div className="flex items-center gap-6 text-xs text-muted-foreground">
+                <div className="flex items-center gap-1.5">
+                  <Bookmark className="w-3.5 h-3.5" />
                   <span className="font-medium">{formatNumber(prompt.saves)}</span>
+                  <span className="text-muted-foreground/70">saved</span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <Copy className="w-3 h-3" />
-                  <span className="font-medium">{formatNumber(prompt.copies)}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <MessageCircle className="w-3 h-3" />
-                  <span className="font-medium">{formatNumber(prompt.comments)}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Heart className="w-3 h-3" />
+                <div className="flex items-center gap-1.5">
+                  <Heart className="w-3.5 h-3.5" />
                   <span className="font-medium">{formatNumber(prompt.likes)}</span>
+                  <span className="text-muted-foreground/70">likes</span>
                 </div>
               </div>
             </div>
