@@ -19,7 +19,7 @@ export function Header() {
   }, []);
 
   const navigation = [
-    { name: 'Browse', href: '#browse' },
+    { name: 'Browse', href: '/browse' },
     { name: 'Categories', href: '#categories' },
     { name: 'Community', href: '#community' },
   ];

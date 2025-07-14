@@ -205,12 +205,14 @@ export function SamplePrompts() {
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          <Button 
-            size="lg"
-            className="bg-gradient-to-r from-primary to-primary-light hover:shadow-glow transition-all duration-300"
-          >
-            View All Prompts
-          </Button>
+          <a href="/browse">
+            <Button 
+              size="lg"
+              className="bg-gradient-to-r from-primary to-primary-light hover:shadow-glow transition-all duration-300"
+            >
+              View All Prompts
+            </Button>
+          </a>
         </motion.div>
       </div>
     </section>

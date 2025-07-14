@@ -127,12 +127,14 @@ export function Hero() {
             variants={itemVariants}
             className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4 mb-12"
           >
-            <Button 
-              size="lg" 
-              className="bg-gradient-to-r from-primary to-primary-light hover:shadow-glow transition-all duration-300 text-lg px-8 py-4 h-auto"
-            >
-              Browse Popular Prompts <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
+            <a href="/browse">
+              <Button 
+                size="lg" 
+                className="bg-gradient-to-r from-primary to-primary-light hover:shadow-glow transition-all duration-300 text-lg px-8 py-4 h-auto"
+              >
+                Browse Popular Prompts <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+            </a>
             <Button 
               variant="outline" 
               size="lg"

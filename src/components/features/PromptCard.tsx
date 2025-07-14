@@ -1,0 +1,265 @@
+import { motion } from 'framer-motion';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { 
+  Star, 
+  Copy, 
+  Bookmark, 
+  Heart, 
+  MessageCircle,
+  Zap,
+  Brain,
+  Sparkles
+} from 'lucide-react';
+import { useState } from 'react';
+
+interface PromptCardProps {
+  prompt: {
+    id: string;
+    title: string;
+    description: string;
+    whoFor: string[];
+    aiModels: string[];
+    tokenUsage: 'Low' | 'Medium' | 'High';
+    rating: number;
+    reviewCount: number;
+    imageUrl?: string;
+    saves: number;
+    copies: number;
+    comments: number;
+    likes: number;
+    author: {
+      name: string;
+      avatar?: string;
+    };
+    isBookmarked?: boolean;
+    isLiked?: boolean;
+  };
+  onCardClick: (id: string) => void;
+  onCopy: (id: string) => void;
+  onBookmark: (id: string) => void;
+  onLike: (id: string) => void;
+}
+
+const getTokenUsageColor = (usage: 'Low' | 'Medium' | 'High') => {
+  switch (usage) {
+    case 'Low': return 'text-green-600 bg-green-100 dark:bg-green-900/20';
+    case 'Medium': return 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20';
+    case 'High': return 'text-red-600 bg-red-100 dark:bg-red-900/20';
+  }
+};
+
+const getTokenUsageIcon = (usage: 'Low' | 'Medium' | 'High') => {
+  switch (usage) {
+    case 'Low': return Zap;
+    case 'Medium': return Brain;
+    case 'High': return Sparkles;
+  }
+};
+
+const formatNumber = (num: number): string => {
+  if (num >= 1000000) {
+    return (num / 1000000).toFixed(1) + 'M';
+  }
+  if (num >= 1000) {
+    return (num / 1000).toFixed(1) + 'k';
+  }
+  return num.toString();
+};
+
+export function PromptCard({ prompt, onCardClick, onCopy, onBookmark, onLike }: PromptCardProps) {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  
+  const TokenIcon = getTokenUsageIcon(prompt.tokenUsage);
+
+  const handleAction = (e: React.MouseEvent, action: () => void) => {
+    e.stopPropagation();
+    action();
+  };
+
+  return (
+    <motion.div
+      initial={{ y: 20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.3 }}
+      whileHover={{ 
+        y: -4,
+        transition: { type: "spring", stiffness: 400, damping: 17 }
+      }}
+      onClick={() => onCardClick(prompt.id)}
+      className="cursor-pointer"
+    >
+      <Card className="h-full glass border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300 group overflow-hidden">
+        {/* Image Section */}
+        {prompt.imageUrl && (
+          <div className="relative h-48 bg-gradient-to-br from-muted to-muted/50 overflow-hidden">
+            {!imageLoaded && !imageError && (
+              <div className="absolute inset-0 bg-muted animate-pulse" />
+            )}
+            {!imageError && (
+              <img
+                src={prompt.imageUrl}
+                alt={prompt.title}
+                className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ${
+                  imageLoaded ? 'opacity-100' : 'opacity-0'
+                }`}
+                onLoad={() => setImageLoaded(true)}
+                onError={() => setImageError(true)}
+                loading="lazy"
+              />
+            )}
+            {imageError && (
+              <div className="w-full h-full flex items-center justify-center bg-muted">
+                <div className="text-muted-foreground text-sm">No preview</div>
+              </div>
+            )}
+            
+            {/* Token Usage Badge */}
+            <div className="absolute top-3 left-3">
+              <Badge 
+                variant="secondary" 
+                className={`${getTokenUsageColor(prompt.tokenUsage)} text-xs font-medium`}
+              >
+                <TokenIcon className="w-3 h-3 mr-1" />
+                {prompt.tokenUsage}
+              </Badge>
+            </div>
+
+            {/* Rating */}
+            <div className="absolute top-3 right-3">
+              <Badge variant="secondary" className="bg-background/80 backdrop-blur text-xs">
+                <Star className="w-3 h-3 mr-1 fill-yellow-400 text-yellow-400" />
+                {prompt.rating}
+              </Badge>
+            </div>
+          </div>
+        )}
+
+        <div className="p-6">
+          {/* Header */}
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-2">
+              {prompt.title}
+            </h3>
+            <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
+              {prompt.description}
+            </p>
+          </div>
+
+          {/* Who it's for tags */}
+          {prompt.whoFor.length > 0 && (
+            <div className="flex flex-wrap gap-1 mb-3">
+              {prompt.whoFor.slice(0, 3).map((tag) => (
+                <Badge 
+                  key={tag} 
+                  variant="outline" 
+                  className="text-xs border-primary/20 text-primary hover:bg-primary/10 transition-colors"
+                >
+                  {tag}
+                </Badge>
+              ))}
+              {prompt.whoFor.length > 3 && (
+                <Badge variant="outline" className="text-xs border-border/50 text-muted-foreground">
+                  +{prompt.whoFor.length - 3}
+                </Badge>
+              )}
+            </div>
+          )}
+
+          {/* AI Models */}
+          {prompt.aiModels.length > 0 && (
+            <div className="flex flex-wrap gap-1 mb-4">
+              {prompt.aiModels.slice(0, 2).map((model) => (
+                <Badge 
+                  key={model} 
+                  variant="secondary" 
+                  className="text-xs bg-secondary/50 hover:bg-secondary transition-colors"
+                >
+                  {model}
+                </Badge>
+              ))}
+              {prompt.aiModels.length > 2 && (
+                <Badge variant="secondary" className="text-xs bg-secondary/50">
+                  +{prompt.aiModels.length - 2}
+                </Badge>
+              )}
+            </div>
+          )}
+
+          {/* Rating and Reviews */}
+          <div className="flex items-center space-x-4 mb-4 text-sm">
+            <div className="flex items-center space-x-1">
+              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+              <span className="font-medium">{prompt.rating}</span>
+              <span className="text-muted-foreground">({formatNumber(prompt.reviewCount)} reviews)</span>
+            </div>
+          </div>
+
+          {/* Stats */}
+          <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
+            <span>{formatNumber(prompt.saves)} saves</span>
+            <span>•</span>
+            <span>{formatNumber(prompt.copies)} copies</span>
+          </div>
+
+          {/* Bottom Actions */}
+          <div className="flex items-center justify-between pt-4 border-t border-border/50">
+            <div className="flex items-center space-x-1">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="w-8 h-8 p-0 hover:bg-primary/10"
+                    onClick={(e) => handleAction(e, () => onCopy(prompt.id))}
+                  >
+                    <Copy className="w-4 h-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Copy prompt</TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className={`w-8 h-8 p-0 ${prompt.isBookmarked ? 'text-primary' : ''} hover:bg-primary/10`}
+                    onClick={(e) => handleAction(e, () => onBookmark(prompt.id))}
+                  >
+                    <Bookmark className={`w-4 h-4 ${prompt.isBookmarked ? 'fill-current' : ''}`} />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Bookmark</TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className={`w-8 h-8 p-0 ${prompt.isLiked ? 'text-red-500' : ''} hover:bg-red-50 dark:hover:bg-red-900/20`}
+                    onClick={(e) => handleAction(e, () => onLike(prompt.id))}
+                  >
+                    <Heart className={`w-4 h-4 ${prompt.isLiked ? 'fill-current' : ''}`} />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Like</TooltipContent>
+              </Tooltip>
+            </div>
+
+            <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+              <MessageCircle className="w-3 h-3" />
+              <span>{formatNumber(prompt.comments)}</span>
+              <Heart className="w-3 h-3" />
+              <span>{formatNumber(prompt.likes)}</span>
+            </div>
+          </div>
+        </div>
+      </Card>
+    </motion.div>
+  );
+}
