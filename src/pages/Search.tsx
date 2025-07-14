@@ -197,11 +197,15 @@ export default function Search() {
 
   const removeFilter = (filterType: string, value: string) => {
     const updatedFilters = { ...filters };
-    if (Array.isArray(updatedFilters[filterType as keyof SearchFilters])) {
-      updatedFilters[filterType as keyof SearchFilters] = 
-        (updatedFilters[filterType as keyof SearchFilters] as string[])
-          .filter(item => item !== value);
+    
+    if (filterType === 'categories') {
+      updatedFilters.categories = updatedFilters.categories.filter(item => item !== value);
+    } else if (filterType === 'aiModels') {
+      updatedFilters.aiModels = updatedFilters.aiModels.filter(item => item !== value);
+    } else if (filterType === 'tokenUsage') {
+      updatedFilters.tokenUsage = updatedFilters.tokenUsage.filter(item => item !== value);
     }
+    
     updateSearchParams(updatedFilters);
   };
 
