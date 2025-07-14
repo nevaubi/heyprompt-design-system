@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sun, Moon, Menu, X, Search, BookOpen, Shield } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -14,8 +15,10 @@ export function Header() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoadingAdmin, setIsLoadingAdmin] = useState(false);
   const { theme, setTheme } = useTheme();
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,6 +33,7 @@ export function Header() {
   useEffect(() => {
     if (user?.id) {
       const fetchUserProfile = async () => {
+        setIsLoadingAdmin(true);
         try {
           const { data: profile } = await supabase
             .from('user_profiles')
@@ -41,14 +45,22 @@ export function Header() {
         } catch (error) {
           console.error('Error fetching user profile:', error);
           setIsAdmin(false);
+        } finally {
+          setIsLoadingAdmin(false);
         }
       };
 
       fetchUserProfile();
     } else {
       setIsAdmin(false);
+      setIsLoadingAdmin(false);
     }
   }, [user]);
+
+  const handleNavigation = (path: string) => {
+    setIsMobileMenuOpen(false);
+    navigate(path);
+  };
 
   const navigation = [
     { name: 'Browse', href: '/browse' },
@@ -208,50 +220,59 @@ export function Header() {
               {/* Navigation Links */}
               <nav className="space-y-1">
                 {navigation.map((item) => (
-                  <a
+                  <button
                     key={item.name}
-                    href={item.href}
-                    className="block text-foreground hover:text-primary transition-colors py-3 px-3 text-base font-medium rounded-lg hover:bg-muted/50"
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={() => {
+                      if (item.href.startsWith('#')) {
+                        // Handle anchor links
+                        const element = document.querySelector(item.href);
+                        element?.scrollIntoView({ behavior: 'smooth' });
+                      } else {
+                        handleNavigation(item.href);
+                      }
+                    }}
+                    className="w-full text-left block text-foreground hover:text-primary active:bg-muted/70 transition-colors py-4 px-4 text-base font-medium rounded-lg hover:bg-muted/50 min-h-[44px] flex items-center"
                   >
                     {item.name}
-                  </a>
+                  </button>
                 ))}
               </nav>
               
               {/* User Menu Items (if logged in) */}
               {user && (
                 <div className="space-y-1 pt-2 border-t border-border">
-                  <a
-                    href="/library"
-                    className="block text-foreground hover:text-primary transition-colors py-3 px-3 text-base font-medium rounded-lg hover:bg-muted/50"
-                    onClick={() => setIsMobileMenuOpen(false)}
+                  <button
+                    onClick={() => handleNavigation('/library')}
+                    className="w-full text-left block text-foreground hover:text-primary active:bg-muted/70 transition-colors py-4 px-4 text-base font-medium rounded-lg hover:bg-muted/50 min-h-[44px] flex items-center"
                   >
                     My Library
-                  </a>
-                  <a
-                    href="/settings"
-                    className="block text-foreground hover:text-primary transition-colors py-3 px-3 text-base font-medium rounded-lg hover:bg-muted/50"
-                    onClick={() => setIsMobileMenuOpen(false)}
+                  </button>
+                  <button
+                    onClick={() => handleNavigation('/settings')}
+                    className="w-full text-left block text-foreground hover:text-primary active:bg-muted/70 transition-colors py-4 px-4 text-base font-medium rounded-lg hover:bg-muted/50 min-h-[44px] flex items-center"
                   >
                     Settings
-                  </a>
-                  {isAdmin && (
-                    <a
-                      href="/admin"
-                      className="flex items-center space-x-2 text-foreground hover:text-primary transition-colors py-3 px-3 text-base font-medium rounded-lg hover:bg-muted/50"
-                      onClick={() => setIsMobileMenuOpen(false)}
+                  </button>
+                  {isLoadingAdmin ? (
+                    <div className="flex items-center space-x-2 py-4 px-4 text-base font-medium rounded-lg min-h-[44px]">
+                      <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                      <span className="text-muted-foreground">Loading...</span>
+                    </div>
+                  ) : isAdmin ? (
+                    <button
+                      onClick={() => handleNavigation('/admin')}
+                      className="w-full text-left flex items-center space-x-2 text-foreground hover:text-primary active:bg-muted/70 transition-colors py-4 px-4 text-base font-medium rounded-lg hover:bg-muted/50 min-h-[44px]"
                     >
                       <Shield className="w-4 h-4" />
                       <span>Admin Panel</span>
-                    </a>
-                  )}
+                    </button>
+                  ) : null}
                   <button
                     onClick={async () => {
                       await signOut();
                       setIsMobileMenuOpen(false);
                     }}
-                    className="w-full text-left text-destructive hover:bg-destructive/10 transition-colors py-3 px-3 text-base font-medium rounded-lg"
+                    className="w-full text-left text-destructive hover:bg-destructive/10 active:bg-destructive/20 transition-colors py-4 px-4 text-base font-medium rounded-lg min-h-[44px] flex items-center"
                   >
                     Sign Out
                   </button>
