@@ -64,7 +64,7 @@ export function Header() {
   };
 
   const navigation = [
-    { name: 'Browse', href: '/browse' },
+    { name: 'Browse All Prompts', href: '/browse' },
   ];
 
   return (
@@ -97,7 +97,7 @@ export function Header() {
 
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8">
+        <nav className="hidden md:flex items-center space-x-8 lg:ml-8 xl:ml-12">
           {navigation.map((item) => (
             item.href.startsWith('#') ? (
               <motion.a
