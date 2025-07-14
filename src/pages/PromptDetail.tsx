@@ -280,10 +280,10 @@ Please provide your feedback in a structured format with specific examples and a
 
   const getTokenUsageColor = (usage: string) => {
     switch (usage) {
-      case 'low': return 'text-green-600 bg-green-100 dark:bg-green-900/20';
-      case 'medium': return 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20';
-      case 'high': return 'text-red-600 bg-red-100 dark:bg-red-900/20';
-      default: return 'text-gray-600 bg-gray-100 dark:bg-gray-900/20';
+      case 'low': return 'text-success-foreground bg-success/10 dark:bg-success/20';
+      case 'medium': return 'text-warning-foreground bg-warning/10 dark:bg-warning/20';
+      case 'high': return 'text-error-foreground bg-error/10 dark:bg-error/20';
+      default: return 'text-muted-foreground bg-muted/50 dark:bg-muted/20';
     }
   };
 
@@ -422,7 +422,7 @@ Please provide your feedback in a structured format with specific examples and a
                   <Button
                     variant="outline"
                     onClick={() => handleLikePrompt(prompt.id)}
-                    className={prompt.isLiked ? 'text-red-500' : ''}
+                    className={prompt.isLiked ? 'text-heart' : ''}
                   >
                     <Heart className={`w-4 h-4 mr-2 ${prompt.isLiked ? 'fill-current' : ''}`} />
                     Like

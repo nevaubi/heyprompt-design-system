@@ -190,7 +190,7 @@ export function Footer() {
           </div>
           <div className="flex items-center space-x-1 text-sm text-muted-foreground">
             <span>Made with</span>
-            <Heart className="w-4 h-4 text-red-500 fill-current" />
+            <Heart className="w-4 h-4 text-heart fill-current" />
             <span>for the AI community</span>
           </div>
         </motion.div>

@@ -134,7 +134,7 @@ export function NetworkError({
 }) {
   return (
     <Card className="p-6 text-center">
-      <AlertTriangle className="w-8 h-8 text-yellow-500 mx-auto mb-3" />
+      <AlertTriangle className="w-8 h-8 text-warning mx-auto mb-3" />
       <h3 className="font-semibold mb-2">Connection Problem</h3>
       <p className="text-sm text-muted-foreground mb-4">{message}</p>
       <Button onClick={onRetry} size="sm">

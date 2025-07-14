@@ -334,7 +334,7 @@ export default function SubmitPrompt() {
                   <div className="space-y-6">
                     <div className="space-y-4">
                       <h3 className="font-semibold flex items-center gap-2">
-                        <CheckCircle className="w-5 h-5 text-green-500" />
+                        <CheckCircle className="w-5 h-5 text-success" />
                         Ready to Publish
                       </h3>
                       <div className="bg-muted p-4 rounded-lg">

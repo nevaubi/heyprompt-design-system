@@ -321,7 +321,7 @@ function UserProfileContent() {
                   <span className="text-muted-foreground">Total Saves</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Star className="w-4 h-4 text-yellow-500" />
+                  <Star className="w-4 h-4 text-star" />
                   <span className="font-semibold">{stats.averageRating}</span>
                   <span className="text-muted-foreground">Avg Rating</span>
                 </div>

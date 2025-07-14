@@ -223,7 +223,7 @@ export function FilterSidebar({ onFilterChange, className }: FilterSidebarProps)
             <div className="flex items-center justify-between text-xs text-muted-foreground px-2">
               <span>Any</span>
               <div className="flex items-center space-x-1">
-                <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                <Star className="w-3 h-3 fill-star text-star" />
                 <span>{ratingRange[0]}+</span>
               </div>
             </div>

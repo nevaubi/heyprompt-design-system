@@ -155,7 +155,7 @@ export function RatingComponent({
           <Star
             className={`w-5 h-5 ${
               isFilled || isHovered
-                ? 'fill-yellow-400 text-yellow-400'
+                ? 'fill-star text-star'
                 : 'text-muted-foreground'
             }`}
           />
@@ -189,7 +189,7 @@ export function RatingComponent({
             {[5, 4, 3, 2, 1].map((rating) => (
               <div key={rating} className="flex items-center space-x-3">
                 <span className="text-sm w-4">{rating}</span>
-                <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                <Star className="w-3 h-3 fill-star text-star" />
                 <Progress 
                   value={getDistributionPercentage(distribution[rating as keyof RatingDistribution])} 
                   className="flex-1 h-2"

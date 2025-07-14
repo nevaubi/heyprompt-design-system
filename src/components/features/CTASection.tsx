@@ -69,7 +69,7 @@ export function CTASection() {
             transition={{ duration: 0.6, delay: 0.3 }}
           >
             <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <div className="w-2 h-2 bg-success rounded-full"></div>
               <span>Weekly updates</span>
             </div>
             <div className="flex items-center space-x-2">

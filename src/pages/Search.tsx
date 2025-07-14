@@ -218,7 +218,7 @@ export default function Search() {
   const highlightText = (text: string, query: string) => {
     if (!query) return text;
     const regex = new RegExp(`(${query})`, 'gi');
-    return text.replace(regex, '<mark class="bg-yellow-200 dark:bg-yellow-800">$1</mark>');
+    return text.replace(regex, '<mark class="bg-warning/20 dark:bg-warning/30">$1</mark>');
   };
 
   return (

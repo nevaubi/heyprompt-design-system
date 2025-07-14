@@ -46,9 +46,9 @@ interface PromptCardProps {
 
 const getTokenUsageColor = (usage: 'Low' | 'Medium' | 'High') => {
   switch (usage) {
-    case 'Low': return 'text-green-600 bg-green-100 dark:bg-green-900/20';
-    case 'Medium': return 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20';
-    case 'High': return 'text-red-600 bg-red-100 dark:bg-red-900/20';
+    case 'Low': return 'text-success-foreground bg-success/10 dark:bg-success/20';
+    case 'Medium': return 'text-warning-foreground bg-warning/10 dark:bg-warning/20';
+    case 'High': return 'text-error-foreground bg-error/10 dark:bg-error/20';
   }
 };
 
@@ -143,7 +143,7 @@ export function PromptCard({ prompt, onCardClick }: PromptCardProps) {
             {/* Rating */}
             <div className="absolute top-3 right-3">
               <Badge variant="secondary" className="bg-background/80 backdrop-blur text-xs">
-                <Star className="w-3 h-3 mr-1 fill-yellow-400 text-yellow-400" />
+                <Star className="w-3 h-3 mr-1 fill-star text-star" />
                 {prompt.rating}
               </Badge>
             </div>
@@ -204,7 +204,7 @@ export function PromptCard({ prompt, onCardClick }: PromptCardProps) {
           {/* Rating and Reviews */}
           <div className="flex items-center space-x-4 mb-4 text-sm">
             <div className="flex items-center space-x-1">
-              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+              <Star className="w-4 h-4 fill-star text-star" />
               <span className="font-medium">{prompt.rating}</span>
               <span className="text-muted-foreground">({formatNumber(prompt.reviewCount)} reviews)</span>
             </div>
@@ -253,7 +253,7 @@ export function PromptCard({ prompt, onCardClick }: PromptCardProps) {
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    className={`w-8 h-8 p-0 ${prompt.isLiked ? 'text-red-500' : ''} hover:bg-red-50 dark:hover:bg-red-900/20`}
+                    className={`w-8 h-8 p-0 ${prompt.isLiked ? 'text-heart' : ''} hover:bg-heart/10 dark:hover:bg-heart/20`}
                     onClick={(e) => handleAction(e, () => handleLikePrompt(prompt.id))}
                   >
                     <Heart className={`w-4 h-4 ${prompt.isLiked ? 'fill-current' : ''}`} />

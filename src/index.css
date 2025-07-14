@@ -8,22 +8,22 @@ All colors MUST be HSL. 8px spacing grid for consistency. Inter font for readabi
 
 @layer base {
   :root {
-    /* Brand Colors - Purple/Blue tech gradient */
+    /* Brand Colors - Clean Blue-Gray */
     --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    --foreground: 220 13% 18%;
     
     /* Glass morphism surfaces */
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 220 13% 18%;
     
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
+    --popover-foreground: 220 13% 18%;
     
-    /* Primary brand - Purple gradient */
-    --primary: 259 94% 51%;
+    /* Primary brand - Sophisticated Blue-Gray */
+    --primary: 220 13% 18%;
     --primary-foreground: 0 0% 98%;
-    --primary-light: 262 83% 58%;
-    --primary-glow: 259 94% 51%;
+    --primary-light: 220 13% 25%;
+    --primary-glow: 220 25% 25%;
     
     /* Secondary surfaces */
     --secondary: 240 4.8% 95.9%;
@@ -41,10 +41,22 @@ All colors MUST be HSL. 8px spacing grid for consistency. Inter font for readabi
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     
+    /* Semantic colors for Clean Blue-Gray theme */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 98%;
+    --warning: 43 96% 56%;
+    --warning-foreground: 220 13% 18%;
+    --error: 0 84% 60%;
+    --error-foreground: 0 0% 98%;
+    --info: 220 25% 45%;
+    --info-foreground: 0 0% 98%;
+    --star: 43 96% 56%;
+    --heart: 350 89% 60%;
+    
     /* Borders and inputs */
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
-    --ring: 259 94% 51%;
+    --ring: 220 13% 18%;
     
     /* Border radius system */
     --radius: 0.75rem;
@@ -54,7 +66,7 @@ All colors MUST be HSL. 8px spacing grid for consistency. Inter font for readabi
     --glass-border: 255 255 255;
     
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(259 94% 51%), hsl(249 95% 63%));
+    --gradient-primary: linear-gradient(135deg, hsl(220 13% 18%), hsl(220 13% 25%));
     --gradient-secondary: linear-gradient(135deg, hsl(240 4.8% 95.9%), hsl(240 5.9% 90%));
     --gradient-glass: linear-gradient(135deg, hsla(var(--glass-bg) / 0.7), hsla(var(--glass-bg) / 0.3));
     
@@ -97,11 +109,11 @@ All colors MUST be HSL. 8px spacing grid for consistency. Inter font for readabi
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
     
-    /* Primary remains vibrant in dark */
-    --primary: 259 94% 51%;
-    --primary-foreground: 0 0% 98%;
-    --primary-light: 262 83% 58%;
-    --primary-glow: 259 94% 51%;
+    /* Primary - Enhanced contrast for dark mode */
+    --primary: 220 13% 91%;
+    --primary-foreground: 220 13% 18%;
+    --primary-light: 220 13% 85%;
+    --primary-glow: 220 25% 70%;
     
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
@@ -115,9 +127,21 @@ All colors MUST be HSL. 8px spacing grid for consistency. Inter font for readabi
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
     
+    /* Dark mode semantic colors */
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 98%;
+    --warning: 43 96% 56%;
+    --warning-foreground: 220 13% 18%;
+    --error: 0 84% 60%;
+    --error-foreground: 0 0% 98%;
+    --info: 220 25% 70%;
+    --info-foreground: 220 13% 18%;
+    --star: 43 96% 56%;
+    --heart: 350 89% 60%;
+    
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
-    --ring: 259 94% 51%;
+    --ring: 220 13% 91%;
     
     /* Dark glassmorphism */
     --glass-bg: 0 0 0;

@@ -178,7 +178,7 @@ export function SamplePrompts() {
 
                   {/* Rating */}
                   <div className="flex items-center space-x-1 mb-3">
-                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                    <Star className="w-4 h-4 fill-star text-star" />
                     <span className="text-sm font-medium">{prompt.rating}</span>
                     <span className="text-xs text-muted-foreground">
                       ({prompt.reviews} reviews)
