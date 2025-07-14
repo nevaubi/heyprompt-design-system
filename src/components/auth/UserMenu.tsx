@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Settings, BookOpen, LogOut, ChevronDown } from 'lucide-react';
+import { User, Settings, BookOpen, LogOut, ChevronDown, Shield } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -24,7 +24,7 @@ export function UserMenu() {
     return email.charAt(0).toUpperCase();
   };
 
-  const [profile, setProfile] = useState<{ username?: string } | null>(null);
+  const [profile, setProfile] = useState<{ username?: string; is_admin?: boolean } | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -36,7 +36,7 @@ export function UserMenu() {
     try {
       const { data } = await supabase
         .from('user_profiles')
-        .select('username')
+        .select('username, is_admin')
         .eq('id', user?.id)
         .single();
       
@@ -50,6 +50,7 @@ export function UserMenu() {
     { icon: User, label: 'My Profile', href: `/u/${profile?.username || 'profile'}` },
     { icon: BookOpen, label: 'My Library', href: '/library' },
     { icon: Settings, label: 'Settings', href: '/settings' },
+    ...(profile?.is_admin ? [{ icon: Shield, label: 'Admin Panel', href: '/admin' }] : []),
   ];
 
   return (

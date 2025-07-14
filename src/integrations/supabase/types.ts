@@ -238,6 +238,7 @@ export type Database = {
           created_at: string | null
           github: string | null
           id: string
+          is_admin: boolean
           twitter: string | null
           updated_at: string | null
           username: string | null
@@ -248,6 +249,7 @@ export type Database = {
           created_at?: string | null
           github?: string | null
           id: string
+          is_admin?: boolean
           twitter?: string | null
           updated_at?: string | null
           username?: string | null
@@ -258,6 +260,7 @@ export type Database = {
           created_at?: string | null
           github?: string | null
           id?: string
+          is_admin?: boolean
           twitter?: string | null
           updated_at?: string | null
           username?: string | null
