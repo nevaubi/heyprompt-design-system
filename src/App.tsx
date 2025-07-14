@@ -7,6 +7,8 @@ import { ThemeProvider } from "@/lib/theme-provider";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Browse from "./pages/Browse";
+import Search from "./pages/Search";
+import PromptDetail from "./pages/PromptDetail";
 import Auth from "./pages/Auth";
 import Library from "./pages/Library";
 import UserProfile from "./pages/UserProfile";
@@ -31,6 +33,8 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/browse" element={<Browse />} />
+              <Route path="/search" element={<Search />} />
+              <Route path="/prompts/:id" element={<PromptDetail />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/library" element={<Library />} />
               <Route path="/submit" element={<SubmitPrompt />} />
