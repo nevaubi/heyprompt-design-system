@@ -1,7 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Header } from '@/components/layout/Header';
-import { Footer } from '@/components/layout/Footer';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -224,9 +222,7 @@ export default function Search() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <main className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8">
         {/* Search Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
@@ -517,8 +513,6 @@ export default function Search() {
             )}
           </div>
         </div>
-      </main>
-      <Footer />
     </div>
   );
 }

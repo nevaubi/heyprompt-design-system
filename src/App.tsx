@@ -23,6 +23,9 @@ const Library = lazy(() => import("./pages/Library"));
 const UserProfile = lazy(() => import("./pages/UserProfile"));
 const SubmitPrompt = lazy(() => import("./pages/SubmitPrompt"));
 
+// Import Layout
+import { Layout } from "@/components/layout/Layout";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -70,8 +73,10 @@ function AppContent() {
         path="/" 
         element={
           <Suspense fallback={<PageLoader />}>
-            <SEO />
-            <Index />
+            <Layout>
+              <SEO />
+              <Index />
+            </Layout>
           </Suspense>
         } 
       />
@@ -79,11 +84,13 @@ function AppContent() {
         path="/browse" 
         element={
           <Suspense fallback={<PageLoader />}>
-            <SEO 
-              title="Browse AI Prompts - HeyPrompt"
-              description="Discover thousands of AI prompts for ChatGPT, Claude, and more. Filter by category, rating, and AI model."
-            />
-            <Browse />
+            <Layout>
+              <SEO 
+                title="Browse AI Prompts - HeyPrompt"
+                description="Discover thousands of AI prompts for ChatGPT, Claude, and more. Filter by category, rating, and AI model."
+              />
+              <Browse />
+            </Layout>
           </Suspense>
         } 
       />
@@ -91,11 +98,13 @@ function AppContent() {
         path="/search" 
         element={
           <Suspense fallback={<PageLoader />}>
-            <SEO 
-              title="Search Results - HeyPrompt"
-              description="Search results for AI prompts, users, and tags."
-            />
-            <Search />
+            <Layout>
+              <SEO 
+                title="Search Results - HeyPrompt"
+                description="Search results for AI prompts, users, and tags."
+              />
+              <Search />
+            </Layout>
           </Suspense>
         } 
       />
@@ -103,7 +112,9 @@ function AppContent() {
         path="/prompts/:id" 
         element={
           <Suspense fallback={<PageLoader />}>
-            <PromptDetail />
+            <Layout>
+              <PromptDetail />
+            </Layout>
           </Suspense>
         } 
       />
@@ -111,11 +122,13 @@ function AppContent() {
         path="/auth" 
         element={
           <Suspense fallback={<PageLoader />}>
-            <SEO 
-              title="Sign In - HeyPrompt"
-              description="Sign in to save prompts, create collections, and join our community."
-            />
-            <Auth />
+            <Layout hideHeader hideFooter>
+              <SEO 
+                title="Sign In - HeyPrompt"
+                description="Sign in to save prompts, create collections, and join our community."
+              />
+              <Auth />
+            </Layout>
           </Suspense>
         } 
       />
@@ -123,11 +136,13 @@ function AppContent() {
         path="/library" 
         element={
           <Suspense fallback={<PageLoader />}>
-            <SEO 
-              title="My Library - HeyPrompt"
-              description="Manage your saved prompts, folders, and submissions."
-            />
-            <Library />
+            <Layout>
+              <SEO 
+                title="My Library - HeyPrompt"
+                description="Manage your saved prompts, folders, and submissions."
+              />
+              <Library />
+            </Layout>
           </Suspense>
         } 
       />
@@ -135,11 +150,13 @@ function AppContent() {
         path="/submit" 
         element={
           <Suspense fallback={<PageLoader />}>
-            <SEO 
-              title="Submit Prompt - HeyPrompt"
-              description="Share your AI prompt with the community and help others discover great prompts."
-            />
-            <SubmitPrompt />
+            <Layout>
+              <SEO 
+                title="Submit Prompt - HeyPrompt"
+                description="Share your AI prompt with the community and help others discover great prompts."
+              />
+              <SubmitPrompt />
+            </Layout>
           </Suspense>
         } 
       />
@@ -147,7 +164,9 @@ function AppContent() {
         path="/u/:username" 
         element={
           <Suspense fallback={<PageLoader />}>
-            <UserProfile />
+            <Layout>
+              <UserProfile />
+            </Layout>
           </Suspense>
         } 
       />
