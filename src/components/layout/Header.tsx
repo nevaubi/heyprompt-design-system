@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
-import { Sun, Moon, Menu, X, Sparkles } from 'lucide-react';
+import { Sun, Moon, Menu, X, Search, BookOpen } from 'lucide-react';
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -19,9 +19,9 @@ export function Header() {
   }, []);
 
   const navigation = [
-    { name: 'Features', href: '#features' },
-    { name: 'Pricing', href: '#pricing' },
-    { name: 'About', href: '#about' },
+    { name: 'Browse', href: '#browse' },
+    { name: 'Categories', href: '#categories' },
+    { name: 'Community', href: '#community' },
   ];
 
   return (
@@ -43,12 +43,24 @@ export function Header() {
           transition={{ type: "spring", stiffness: 400, damping: 17 }}
         >
           <div className="w-8 h-8 bg-gradient-to-r from-primary to-primary-light rounded-lg flex items-center justify-center">
-            <Sparkles className="w-5 h-5 text-primary-foreground" />
+            <BookOpen className="w-5 h-5 text-primary-foreground" />
           </div>
           <span className="text-xl font-semibold bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">
-            HeyPrompt
+            PromptLib
           </span>
         </motion.div>
+
+        {/* Desktop Search */}
+        <div className="hidden lg:flex flex-1 max-w-lg mx-8">
+          <div className="relative w-full">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Search prompts..."
+              className="w-full pl-10 pr-4 py-2 bg-background/50 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+            />
+          </div>
+        </div>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
@@ -73,6 +85,15 @@ export function Header() {
 
         {/* Right side actions */}
         <div className="flex items-center space-x-4">
+          {/* Mobile Search Icon */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="lg:hidden w-10 h-10 p-0"
+          >
+            <Search className="h-5 w-5" />
+          </Button>
+
           {/* Theme toggle */}
           <Button
             variant="ghost"

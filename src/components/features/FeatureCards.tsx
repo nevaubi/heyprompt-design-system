@@ -1,50 +1,29 @@
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { 
-  Search, 
-  Share2, 
+  CheckCircle, 
   BookMarked, 
-  Layers, 
-  Zap, 
-  Shield 
+  Users
 } from 'lucide-react';
 
 const features = [
   {
-    icon: Search,
-    title: "Smart Discovery",
-    description: "Find the perfect prompt with AI-powered search and intelligent categorization across thousands of curated prompts.",
-    gradient: "from-blue-500 to-cyan-500"
-  },
-  {
-    icon: BookMarked,
-    title: "Personal Library",
-    description: "Save, organize, and manage your favorite prompts with custom tags, folders, and powerful filtering options.",
-    gradient: "from-purple-500 to-pink-500"
-  },
-  {
-    icon: Share2,
-    title: "Team Collaboration",
-    description: "Share prompt collections with your team, collaborate on improvements, and maintain consistent AI outputs.",
+    icon: CheckCircle,
+    title: "Curated & Tested",
+    description: "Every prompt in our library has been tested with real examples. See actual results and learn what works best for different use cases.",
     gradient: "from-green-500 to-emerald-500"
   },
   {
-    icon: Layers,
-    title: "Template System",
-    description: "Create reusable prompt templates with variables, making it easy to adapt prompts for different contexts.",
-    gradient: "from-orange-500 to-red-500"
+    icon: BookMarked,
+    title: "Organized Library",
+    description: "Save your favorite prompts, create custom collections, and organize everything with powerful tagging and search functionality.",
+    gradient: "from-blue-500 to-cyan-500"
   },
   {
-    icon: Zap,
-    title: "Quick Actions",
-    description: "One-click copy, instant testing with multiple AI models, and rapid iteration on your prompt ideas.",
-    gradient: "from-indigo-500 to-purple-500"
-  },
-  {
-    icon: Shield,
-    title: "Enterprise Ready",
-    description: "SOC 2 compliance, SSO integration, advanced permissions, and audit logs for enterprise teams.",
-    gradient: "from-teal-500 to-blue-500"
+    icon: Users,
+    title: "Active Community",
+    description: "Connect with prompt engineers and AI enthusiasts. Share your discoveries, get feedback, and learn from the best in the field.",
+    gradient: "from-purple-500 to-pink-500"
   }
 ];
 
@@ -79,19 +58,19 @@ export function FeatureCards() {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-3xl md:text-5xl font-bold mb-4">
-            Everything you need to{' '}
+            Why developers and creators{' '}
             <span className="bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">
-              master AI prompts
+              trust PromptLib
             </span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            From discovery to deployment, HeyPrompt provides all the tools you need 
-            to build, organize, and scale your AI prompt workflows.
+            Join thousands of creators who rely on our curated prompt library 
+            to get better AI results faster.
           </p>
         </motion.div>
 
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="grid grid-cols-1 md:grid-cols-3 gap-8"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"

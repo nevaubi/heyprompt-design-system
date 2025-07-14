@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Sparkles, Zap, Users } from 'lucide-react';
+import { Search, ArrowRight, BookMarked, Users, Star } from 'lucide-react';
 
 export function Hero() {
   const containerVariants = {
@@ -76,8 +76,8 @@ export function Hero() {
             variants={itemVariants}
             className="inline-flex items-center space-x-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-6"
           >
-            <Sparkles className="w-4 h-4" />
-            <span>The modern way to organize AI prompts</span>
+            <Star className="w-4 h-4" />
+            <span>Trusted by 10,000+ creators and teams</span>
           </motion.div>
 
           {/* Main heading */}
@@ -85,10 +85,11 @@ export function Hero() {
             variants={itemVariants}
             className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight"
           >
-            Your AI Prompts,{' '}
+            Discover & Share{' '}
             <span className="bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">
-              Supercharged
-            </span>
+              AI Prompts
+            </span>{' '}
+            That Actually Work
           </motion.h1>
 
           {/* Subtitle */}
@@ -96,9 +97,30 @@ export function Hero() {
             variants={itemVariants}
             className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed"
           >
-            Discover, organize, and share the most effective AI prompts. 
-            Build your prompt library and collaborate with teams to get better results, faster.
+            Find tested prompts from the community, save your favorites, and never run out of inspiration. 
+            Every prompt includes real examples and results.
           </motion.p>
+
+          {/* Hero Search Bar */}
+          <motion.div
+            variants={itemVariants}
+            className="max-w-2xl mx-auto mb-8"
+          >
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="Search thousands of prompts..."
+                className="w-full pl-12 pr-4 py-4 text-lg bg-background border-2 border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all shadow-lg"
+              />
+              <Button 
+                size="sm" 
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-primary to-primary-light"
+              >
+                Search
+              </Button>
+            </div>
+          </motion.div>
 
           {/* CTA Buttons */}
           <motion.div
@@ -109,14 +131,14 @@ export function Hero() {
               size="lg" 
               className="bg-gradient-to-r from-primary to-primary-light hover:shadow-glow transition-all duration-300 text-lg px-8 py-4 h-auto"
             >
-              Start Building <ArrowRight className="ml-2 w-5 h-5" />
+              Browse Popular Prompts <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
             <Button 
               variant="outline" 
               size="lg"
               className="text-lg px-8 py-4 h-auto glass border-border/50 hover:bg-primary/5"
             >
-              View Examples
+              Submit a Prompt
             </Button>
           </motion.div>
 
@@ -127,9 +149,9 @@ export function Hero() {
           >
             <div className="text-center">
               <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-xl mx-auto mb-3">
-                <Zap className="w-6 h-6 text-primary" />
+                <BookMarked className="w-6 h-6 text-primary" />
               </div>
-              <div className="text-2xl font-bold text-foreground">10k+</div>
+              <div className="text-2xl font-bold text-foreground">50k+</div>
               <div className="text-sm text-muted-foreground">Curated Prompts</div>
             </div>
             
@@ -137,16 +159,16 @@ export function Hero() {
               <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-xl mx-auto mb-3">
                 <Users className="w-6 h-6 text-primary" />
               </div>
-              <div className="text-2xl font-bold text-foreground">50k+</div>
+              <div className="text-2xl font-bold text-foreground">10k+</div>
               <div className="text-sm text-muted-foreground">Active Users</div>
             </div>
             
             <div className="text-center">
               <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-xl mx-auto mb-3">
-                <Sparkles className="w-6 h-6 text-primary" />
+                <Star className="w-6 h-6 text-primary" />
               </div>
-              <div className="text-2xl font-bold text-foreground">99%</div>
-              <div className="text-sm text-muted-foreground">Satisfaction</div>
+              <div className="text-2xl font-bold text-foreground">4.9/5</div>
+              <div className="text-sm text-muted-foreground">User Rating</div>
             </div>
           </motion.div>
         </motion.div>
