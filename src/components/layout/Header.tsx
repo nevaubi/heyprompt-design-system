@@ -13,7 +13,7 @@ export function Header() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   const { theme, setTheme } = useTheme();
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -153,20 +153,39 @@ export function Header() {
           />
           
           <motion.div
-            className="sm:hidden fixed top-14 left-0 right-0 z-50 glass-strong border-t border-border/50 max-h-[80vh] overflow-y-auto"
+            className="sm:hidden fixed top-14 left-0 right-0 z-50 bg-background border border-border shadow-lg max-h-[60vh] overflow-y-auto"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="container mx-auto px-6 py-8 space-y-8">
+            <div className="px-4 py-4 space-y-4">
+              {/* User Section (if logged in) */}
+              {user && (
+                <div className="flex items-center space-x-3 p-3 bg-muted/30 rounded-lg">
+                  <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+                    <span className="text-primary-foreground text-sm font-medium">
+                      {user.email?.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">
+                      {user.user_metadata?.full_name || user.email}
+                    </p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {user.email}
+                    </p>
+                  </div>
+                </div>
+              )}
+              
               {/* Navigation Links */}
-              <nav className="space-y-2">
+              <nav className="space-y-1">
                 {navigation.map((item) => (
                   <a
                     key={item.name}
                     href={item.href}
-                    className="block text-foreground hover:text-primary transition-smooth py-4 px-3 text-lg font-medium rounded-lg hover:bg-muted/50"
+                    className="block text-foreground hover:text-primary transition-colors py-3 px-3 text-base font-medium rounded-lg hover:bg-muted/50"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     {item.name}
@@ -174,39 +193,59 @@ export function Header() {
                 ))}
               </nav>
               
-              {/* Auth Section */}
-              <div className="pt-6 border-t border-border/50">
-                {user ? (
-                  <div className="space-y-4">
-                    <div className="text-sm text-muted-foreground font-medium">Account</div>
-                    <UserMenu />
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <Button 
-                      variant="outline" 
-                      size="lg" 
-                      className="w-full h-12 text-base font-medium" 
-                      onClick={() => {
-                        setShowAuthModal(true);
-                        setIsMobileMenuOpen(false);
-                      }}
-                    >
-                      Sign In
-                    </Button>
-                    <Button 
-                      size="lg" 
-                      className="w-full h-12 bg-gradient-to-r from-primary to-primary-light text-base font-medium" 
-                      onClick={() => {
-                        setShowAuthModal(true);
-                        setIsMobileMenuOpen(false);
-                      }}
-                    >
-                      Get Started
-                    </Button>
-                  </div>
-                )}
-              </div>
+              {/* User Menu Items (if logged in) */}
+              {user && (
+                <div className="space-y-1 pt-2 border-t border-border">
+                  <a
+                    href="/library"
+                    className="block text-foreground hover:text-primary transition-colors py-3 px-3 text-base font-medium rounded-lg hover:bg-muted/50"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    My Library
+                  </a>
+                  <a
+                    href="/settings"
+                    className="block text-foreground hover:text-primary transition-colors py-3 px-3 text-base font-medium rounded-lg hover:bg-muted/50"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Settings
+                  </a>
+                  <button
+                    onClick={async () => {
+                      await signOut();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="w-full text-left text-destructive hover:bg-destructive/10 transition-colors py-3 px-3 text-base font-medium rounded-lg"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              )}
+              
+              {/* Auth Buttons (if not logged in) */}
+              {!user && (
+                <div className="space-y-3 pt-2 border-t border-border">
+                  <Button 
+                    variant="outline" 
+                    className="w-full h-11 text-base font-medium" 
+                    onClick={() => {
+                      setShowAuthModal(true);
+                      setIsMobileMenuOpen(false);
+                    }}
+                  >
+                    Sign In
+                  </Button>
+                  <Button 
+                    className="w-full h-11 bg-gradient-to-r from-primary to-primary-light text-base font-medium" 
+                    onClick={() => {
+                      setShowAuthModal(true);
+                      setIsMobileMenuOpen(false);
+                    }}
+                  >
+                    Get Started
+                  </Button>
+                </div>
+              )}
             </div>
           </motion.div>
         </>
@@ -222,20 +261,20 @@ export function Header() {
           />
           
           <motion.div
-            className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-lg border-b border-border/50 lg:hidden safe-top"
+            className="fixed top-0 left-0 right-0 z-50 bg-background border-b border-border lg:hidden safe-top"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="container mx-auto px-6 py-6">
-              <div className="flex items-center space-x-4">
+            <div className="px-4 py-4">
+              <div className="flex items-center space-x-3">
                 <div className="relative flex-1">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <input
                     type="text"
                     placeholder="Search prompts..."
-                    className="w-full pl-12 pr-4 py-4 bg-muted/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-base font-medium"
+                    className="w-full pl-10 pr-4 py-3 bg-muted/50 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-base"
                     autoFocus
                   />
                 </div>
@@ -243,9 +282,9 @@ export function Header() {
                   variant="ghost"
                   size="icon"
                   onClick={() => setShowMobileSearch(false)}
-                  className="h-12 w-12 flex-shrink-0"
+                  className="h-11 w-11 flex-shrink-0"
                 >
-                  <X className="h-6 w-6" />
+                  <X className="h-5 w-5" />
                 </Button>
               </div>
             </div>

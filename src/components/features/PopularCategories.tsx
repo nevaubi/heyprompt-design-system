@@ -59,7 +59,7 @@ export function PopularCategories() {
 
   const getCategoryColor = (name: string) => {
     const colorMap: Record<string, string> = {
-      'Business': 'from-orange-500 to-amber-500',
+      'Business': 'from-orange-500 to-red-500',
       'Content Creators': 'from-purple-500 to-violet-500',
       'Developers': 'from-blue-500 to-indigo-500',
       'Marketers': 'from-pink-500 to-rose-500',
