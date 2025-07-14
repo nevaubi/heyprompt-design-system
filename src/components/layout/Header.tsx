@@ -2,16 +2,18 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
-import { Sun, Moon, Menu, X, Search, BookOpen } from 'lucide-react';
+import { Sun, Moon, Menu, X, Search, BookOpen, Shield } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { UserMenu } from '@/components/auth/UserMenu';
 import { AuthModal } from '@/components/auth/AuthModal';
+import { supabase } from '@/integrations/supabase/client';
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const { theme, setTheme } = useTheme();
   const { user, signOut } = useAuth();
 
@@ -23,6 +25,30 @@ export function Header() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Fetch user profile to check admin status
+  useEffect(() => {
+    if (user?.id) {
+      const fetchUserProfile = async () => {
+        try {
+          const { data: profile } = await supabase
+            .from('user_profiles')
+            .select('is_admin')
+            .eq('id', user.id)
+            .single();
+          
+          setIsAdmin(profile?.is_admin || false);
+        } catch (error) {
+          console.error('Error fetching user profile:', error);
+          setIsAdmin(false);
+        }
+      };
+
+      fetchUserProfile();
+    } else {
+      setIsAdmin(false);
+    }
+  }, [user]);
 
   const navigation = [
     { name: 'Browse', href: '/browse' },
@@ -153,7 +179,7 @@ export function Header() {
           />
           
           <motion.div
-            className="sm:hidden fixed top-14 left-0 right-0 z-50 bg-background border border-border shadow-lg max-h-[60vh] overflow-y-auto"
+            className="sm:hidden fixed top-14 left-0 right-0 z-60 bg-background border border-border shadow-lg max-h-[60vh] overflow-y-auto"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
@@ -210,6 +236,16 @@ export function Header() {
                   >
                     Settings
                   </a>
+                  {isAdmin && (
+                    <a
+                      href="/admin"
+                      className="flex items-center space-x-2 text-foreground hover:text-primary transition-colors py-3 px-3 text-base font-medium rounded-lg hover:bg-muted/50"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <Shield className="w-4 h-4" />
+                      <span>Admin Panel</span>
+                    </a>
+                  )}
                   <button
                     onClick={async () => {
                       await signOut();
