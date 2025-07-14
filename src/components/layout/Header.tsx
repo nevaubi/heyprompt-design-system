@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Sun, Moon, Menu, X, Search, BookOpen, Shield } from 'lucide-react';
+import { Sun, Moon, Menu, X, BookOpen, Shield } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { UserMenu } from '@/components/auth/UserMenu';
 import { AuthModal } from '@/components/auth/AuthModal';
@@ -13,7 +13,7 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [showMobileSearch, setShowMobileSearch] = useState(false);
+  
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoadingAdmin, setIsLoadingAdmin] = useState(false);
   const { theme, setTheme } = useTheme();
@@ -65,8 +65,6 @@ export function Header() {
 
   const navigation = [
     { name: 'Browse', href: '/browse' },
-    { name: 'Categories', href: '#categories' },
-    { name: 'Community', href: '#community' },
   ];
 
   return (
@@ -97,17 +95,6 @@ export function Header() {
           </span>
         </motion.a>
 
-        {/* Desktop Search */}
-        <div className="hidden lg:flex flex-1 max-w-lg mx-6 xl:mx-8">
-          <div className="relative w-full">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Search prompts..."
-              className="w-full pl-10 pr-4 py-2.5 bg-background/50 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all hover:bg-background/70"
-            />
-          </div>
-        </div>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
@@ -158,15 +145,6 @@ export function Header() {
 
         {/* Right side actions */}
         <div className="flex items-center space-x-2 sm:space-x-3 lg:space-x-4">
-          {/* Mobile Search Icon */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="lg:hidden h-10 w-10"
-            onClick={() => setShowMobileSearch(true)}
-          >
-            <Search className="h-5 w-5" />
-          </Button>
 
           {/* Theme toggle */}
           <Button
@@ -350,46 +328,6 @@ export function Header() {
         </>
       )}
 
-      {/* Mobile Search Modal */}
-      {showMobileSearch && (
-        <>
-          {/* Backdrop */}
-          <div 
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 lg:hidden"
-            onClick={() => setShowMobileSearch(false)}
-          />
-          
-          <motion.div
-            className="fixed top-0 left-0 right-0 z-50 bg-background border-b border-border lg:hidden safe-top"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-          >
-            <div className="px-4 py-4">
-              <div className="flex items-center space-x-3">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                  <input
-                    type="text"
-                    placeholder="Search prompts..."
-                    className="w-full pl-10 pr-4 py-3 bg-muted/50 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-base"
-                    autoFocus
-                  />
-                </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setShowMobileSearch(false)}
-                  className="h-11 w-11 flex-shrink-0"
-                >
-                  <X className="h-5 w-5" />
-                </Button>
-              </div>
-            </div>
-          </motion.div>
-        </>
-      )}
 
       {/* Auth Modal */}
       <AuthModal
