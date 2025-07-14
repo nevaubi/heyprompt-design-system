@@ -43,18 +43,20 @@ export function Header() {
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between">
         {/* Logo */}
-        <motion.div 
-          className="flex items-center space-x-2"
+        <motion.a 
+          href="/"
+          className="flex items-center space-x-2 cursor-pointer"
           whileHover={{ scale: 1.05 }}
           transition={{ type: "spring", stiffness: 400, damping: 17 }}
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         >
           <div className="w-8 h-8 bg-gradient-to-r from-primary to-primary-light rounded-lg flex items-center justify-center">
             <BookOpen className="w-5 h-5 text-primary-foreground" />
           </div>
           <span className="text-xl font-semibold bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">
-            PromptLib
+            HeyPrompt!
           </span>
-        </motion.div>
+        </motion.a>
 
         {/* Desktop Search */}
         <div className="hidden lg:flex flex-1 max-w-lg mx-6 xl:mx-8">
