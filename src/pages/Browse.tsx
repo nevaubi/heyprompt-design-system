@@ -17,27 +17,8 @@ import {
   ArrowUpDown
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-
 import { supabase } from "@/integrations/supabase/client";
-
-interface BrowsePrompt {
-  id: string;
-  title: string;
-  description: string;
-  whoFor: string[];
-  aiModels: string[];
-  tokenUsage: 'Low' | 'Medium' | 'High';
-  rating: number;
-  reviewCount: number;
-  imageUrl: string;
-  saves: number;
-  copies: number;
-  comments: number;
-  likes: number;
-  author: { name: string; avatar: string };
-  isBookmarked: boolean;
-  isLiked: boolean;
-}
+import type { PromptCardData } from '@/types/prompt';
 
 const sortOptions = [
   { value: 'popularity', label: 'Most Popular' },
@@ -48,8 +29,8 @@ const sortOptions = [
 ];
 
 export default function Browse() {
-  const [prompts, setPrompts] = useState<BrowsePrompt[]>([]);
-  const [filteredPrompts, setFilteredPrompts] = useState<BrowsePrompt[]>([]);
+  const [prompts, setPrompts] = useState<PromptCardData[]>([]);
+  const [filteredPrompts, setFilteredPrompts] = useState<PromptCardData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('popularity');
@@ -90,23 +71,17 @@ export default function Browse() {
       }
 
       // Transform data to match expected format
-      const transformedPrompts = prompts?.map((prompt, index) => ({
+      const transformedPrompts: PromptCardData[] = prompts?.map((prompt, index) => ({
         id: prompt.id,
         title: prompt.title,
         description: prompt.description,
         whoFor: prompt.prompt_tags?.filter(pt => pt.tags.type === 'who_for').map(pt => pt.tags.name) || [],
         aiModels: prompt.prompt_tags?.filter(pt => pt.tags.type === 'ai_model').map(pt => pt.tags.name) || [],
-        tokenUsage: (prompt.token_usage === 'low' ? 'Low' : prompt.token_usage === 'medium' ? 'Medium' : 'High') as 'Low' | 'Medium' | 'High',
+        tokenUsage: prompt.token_usage as 'low' | 'medium' | 'high',
         rating: 4.5 + (Math.random() * 0.5), // Randomize between 4.5-5.0
         reviewCount: 50 + Math.floor(Math.random() * 200),
-        imageUrl: [
-          'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=200&fit=crop',
-          'https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?w=400&h=200&fit=crop',
-          'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=200&fit=crop',
-          'https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=400&h=200&fit=crop',
-          'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=400&h=200&fit=crop',
-          'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=400&h=200&fit=crop'
-        ][index % 6],
+        emoji: prompt.emoji || '🎨',
+        background_color: prompt.background_color || 'gradient-blue',
         saves: Math.floor((prompt.copy_count || 0) / 2),
         copies: prompt.copy_count || 0,
         comments: 0, // Will add when comments are implemented
@@ -158,14 +133,14 @@ export default function Browse() {
     }
 
     if (filters.minRating > 0) {
-      filtered = filtered.filter(prompt => prompt.rating >= filters.minRating);
+      filtered = filtered.filter(prompt => (prompt.rating || 0) >= filters.minRating);
     }
 
     // Apply sorting
     filtered.sort((a, b) => {
       switch (sortBy) {
         case 'rating':
-          return b.rating - a.rating;
+          return (b.rating || 0) - (a.rating || 0);
         case 'newest':
           return parseInt(b.id) - parseInt(a.id);
         case 'saves':
@@ -351,11 +326,11 @@ export default function Browse() {
                     {model}
                   </Badge>
                 ))}
-                {filters.tokenUsage.map((usage) => (
-                  <Badge key={usage} variant="outline" className="text-xs">
-                    {usage} tokens
-                  </Badge>
-                ))}
+                 {filters.tokenUsage.map((usage) => (
+                   <Badge key={usage} variant="outline" className="text-xs">
+                     {usage.charAt(0).toUpperCase() + usage.slice(1)} tokens
+                   </Badge>
+                 ))}
                 {filters.minRating > 0 && (
                   <Badge variant="outline" className="text-xs">
                     {filters.minRating}+ stars

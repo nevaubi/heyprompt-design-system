@@ -5,26 +5,20 @@ import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Star, Filter, X } from 'lucide-react';
 import { useState } from 'react';
+import { useTags } from '@/hooks/useTags';
 
 interface FilterSidebarProps {
   onFilterChange: (filters: any) => void;
   className?: string;
 }
 
-const categories = [
-  'Marketing', 'Development', 'Design', 'Writing', 'Business', 
-  'Education', 'Research', 'Content', 'Sales', 'Support'
-];
-
-const aiModels = [
-  'GPT-4', 'GPT-3.5', 'Claude', 'Gemini', 'LLaMA', 'Mistral'
-];
-
-const tokenUsages = ['Low', 'Medium', 'High'];
+const tokenUsages = ['low', 'medium', 'high'];
 
 export function FilterSidebar({ onFilterChange, className }: FilterSidebarProps) {
+  const { tags, isLoading, error } = useTags();
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedModels, setSelectedModels] = useState<string[]>([]);
   const [selectedTokenUsage, setSelectedTokenUsage] = useState<string[]>([]);
@@ -138,21 +132,34 @@ export function FilterSidebar({ onFilterChange, className }: FilterSidebarProps)
         <div className="mb-6">
           <Label className="text-sm font-medium mb-3 block">Categories</Label>
           <div className="space-y-3 max-h-48 overflow-y-auto">
-            {categories.map((category) => (
-              <div key={category} className="flex items-center space-x-2">
-                <Checkbox 
-                  id={`category-${category}`}
-                  checked={selectedCategories.includes(category)}
-                  onCheckedChange={(checked) => handleCategoryChange(category, checked as boolean)}
-                />
-                <Label 
-                  htmlFor={`category-${category}`}
-                  className="text-sm cursor-pointer flex-1"
-                >
-                  {category}
-                </Label>
-              </div>
-            ))}
+            {isLoading ? (
+              Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="flex items-center space-x-2">
+                  <Skeleton className="w-4 h-4" />
+                  <Skeleton className="h-4 w-20" />
+                </div>
+              ))
+            ) : error ? (
+              <div className="text-sm text-muted-foreground">Failed to load categories</div>
+            ) : tags.categories.length === 0 ? (
+              <div className="text-sm text-muted-foreground">No categories available</div>
+            ) : (
+              tags.categories.map((category) => (
+                <div key={category.id} className="flex items-center space-x-2">
+                  <Checkbox 
+                    id={`category-${category.id}`}
+                    checked={selectedCategories.includes(category.name)}
+                    onCheckedChange={(checked) => handleCategoryChange(category.name, checked as boolean)}
+                  />
+                  <Label 
+                    htmlFor={`category-${category.id}`}
+                    className="text-sm cursor-pointer flex-1"
+                  >
+                    {category.name}
+                  </Label>
+                </div>
+              ))
+            )}
           </div>
         </div>
 
@@ -162,21 +169,34 @@ export function FilterSidebar({ onFilterChange, className }: FilterSidebarProps)
         <div className="mb-6">
           <Label className="text-sm font-medium mb-3 block">AI Models</Label>
           <div className="space-y-3">
-            {aiModels.map((model) => (
-              <div key={model} className="flex items-center space-x-2">
-                <Checkbox 
-                  id={`model-${model}`}
-                  checked={selectedModels.includes(model)}
-                  onCheckedChange={(checked) => handleModelChange(model, checked as boolean)}
-                />
-                <Label 
-                  htmlFor={`model-${model}`}
-                  className="text-sm cursor-pointer flex-1"
-                >
-                  {model}
-                </Label>
-              </div>
-            ))}
+            {isLoading ? (
+              Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="flex items-center space-x-2">
+                  <Skeleton className="w-4 h-4" />
+                  <Skeleton className="h-4 w-16" />
+                </div>
+              ))
+            ) : error ? (
+              <div className="text-sm text-muted-foreground">Failed to load AI models</div>
+            ) : tags.aiModels.length === 0 ? (
+              <div className="text-sm text-muted-foreground">No AI models available</div>
+            ) : (
+              tags.aiModels.map((model) => (
+                <div key={model.id} className="flex items-center space-x-2">
+                  <Checkbox 
+                    id={`model-${model.id}`}
+                    checked={selectedModels.includes(model.name)}
+                    onCheckedChange={(checked) => handleModelChange(model.name, checked as boolean)}
+                  />
+                  <Label 
+                    htmlFor={`model-${model.id}`}
+                    className="text-sm cursor-pointer flex-1"
+                  >
+                    {model.name}
+                  </Label>
+                </div>
+              ))
+            )}
           </div>
         </div>
 
@@ -193,12 +213,12 @@ export function FilterSidebar({ onFilterChange, className }: FilterSidebarProps)
                   checked={selectedTokenUsage.includes(usage)}
                   onCheckedChange={(checked) => handleTokenUsageChange(usage, checked as boolean)}
                 />
-                <Label 
-                  htmlFor={`token-${usage}`}
-                  className="text-sm cursor-pointer flex-1"
-                >
-                  {usage}
-                </Label>
+                  <Label 
+                    htmlFor={`token-${usage}`}
+                    className="text-sm cursor-pointer flex-1"
+                  >
+                    {usage.charAt(0).toUpperCase() + usage.slice(1)}
+                  </Label>
               </div>
             ))}
           </div>

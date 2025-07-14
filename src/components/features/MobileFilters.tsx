@@ -6,26 +6,20 @@ import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Filter, Star, X } from 'lucide-react';
 import { useState } from 'react';
+import { useTags } from '@/hooks/useTags';
 
 interface MobileFiltersProps {
   onFilterChange: (filters: any) => void;
   activeFiltersCount: number;
 }
 
-const categories = [
-  'Marketing', 'Development', 'Design', 'Writing', 'Business', 
-  'Education', 'Research', 'Content', 'Sales', 'Support'
-];
-
-const aiModels = [
-  'GPT-4', 'GPT-3.5', 'Claude', 'Gemini', 'LLaMA', 'Mistral'
-];
-
-const tokenUsages = ['Low', 'Medium', 'High'];
+const tokenUsages = ['low', 'medium', 'high'];
 
 export function MobileFilters({ onFilterChange, activeFiltersCount }: MobileFiltersProps) {
+  const { tags, isLoading, error } = useTags();
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedModels, setSelectedModels] = useState<string[]>([]);
   const [selectedTokenUsage, setSelectedTokenUsage] = useState<string[]>([]);
@@ -158,21 +152,34 @@ export function MobileFilters({ onFilterChange, activeFiltersCount }: MobileFilt
             <div>
               <Label className="text-sm font-medium mb-3 block">Categories</Label>
               <div className="grid grid-cols-2 gap-3">
-                {categories.map((category) => (
-                  <div key={category} className="flex items-center space-x-2">
-                    <Checkbox 
-                      id={`mobile-category-${category}`}
-                      checked={selectedCategories.includes(category)}
-                      onCheckedChange={(checked) => handleCategoryChange(category, checked as boolean)}
-                    />
-                    <Label 
-                      htmlFor={`mobile-category-${category}`}
-                      className="text-sm cursor-pointer flex-1 leading-none"
-                    >
-                      {category}
-                    </Label>
-                  </div>
-                ))}
+                {isLoading ? (
+                  Array.from({ length: 6 }).map((_, i) => (
+                    <div key={i} className="flex items-center space-x-2">
+                      <Skeleton className="w-4 h-4" />
+                      <Skeleton className="h-4 w-16" />
+                    </div>
+                  ))
+                ) : error ? (
+                  <div className="text-sm text-muted-foreground col-span-2">Failed to load categories</div>
+                ) : tags.categories.length === 0 ? (
+                  <div className="text-sm text-muted-foreground col-span-2">No categories available</div>
+                ) : (
+                  tags.categories.map((category) => (
+                    <div key={category.id} className="flex items-center space-x-2">
+                      <Checkbox 
+                        id={`mobile-category-${category.id}`}
+                        checked={selectedCategories.includes(category.name)}
+                        onCheckedChange={(checked) => handleCategoryChange(category.name, checked as boolean)}
+                      />
+                      <Label 
+                        htmlFor={`mobile-category-${category.id}`}
+                        className="text-sm cursor-pointer flex-1 leading-none"
+                      >
+                        {category.name}
+                      </Label>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
 
@@ -182,21 +189,34 @@ export function MobileFilters({ onFilterChange, activeFiltersCount }: MobileFilt
             <div>
               <Label className="text-sm font-medium mb-3 block">AI Models</Label>
               <div className="grid grid-cols-2 gap-3">
-                {aiModels.map((model) => (
-                  <div key={model} className="flex items-center space-x-2">
-                    <Checkbox 
-                      id={`mobile-model-${model}`}
-                      checked={selectedModels.includes(model)}
-                      onCheckedChange={(checked) => handleModelChange(model, checked as boolean)}
-                    />
-                    <Label 
-                      htmlFor={`mobile-model-${model}`}
-                      className="text-sm cursor-pointer flex-1 leading-none"
-                    >
-                      {model}
-                    </Label>
-                  </div>
-                ))}
+                {isLoading ? (
+                  Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} className="flex items-center space-x-2">
+                      <Skeleton className="w-4 h-4" />
+                      <Skeleton className="h-4 w-16" />
+                    </div>
+                  ))
+                ) : error ? (
+                  <div className="text-sm text-muted-foreground col-span-2">Failed to load AI models</div>
+                ) : tags.aiModels.length === 0 ? (
+                  <div className="text-sm text-muted-foreground col-span-2">No AI models available</div>
+                ) : (
+                  tags.aiModels.map((model) => (
+                    <div key={model.id} className="flex items-center space-x-2">
+                      <Checkbox 
+                        id={`mobile-model-${model.id}`}
+                        checked={selectedModels.includes(model.name)}
+                        onCheckedChange={(checked) => handleModelChange(model.name, checked as boolean)}
+                      />
+                      <Label 
+                        htmlFor={`mobile-model-${model.id}`}
+                        className="text-sm cursor-pointer flex-1 leading-none"
+                      >
+                        {model.name}
+                      </Label>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
 
@@ -217,7 +237,7 @@ export function MobileFilters({ onFilterChange, activeFiltersCount }: MobileFilt
                       htmlFor={`mobile-token-${usage}`}
                       className="text-sm cursor-pointer flex-1 leading-none"
                     >
-                      {usage}
+                      {usage.charAt(0).toUpperCase() + usage.slice(1)}
                     </Label>
                   </div>
                 ))}

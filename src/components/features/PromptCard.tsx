@@ -17,45 +17,26 @@ import { useState } from 'react';
 import { usePromptActions } from '@/hooks/usePromptActions';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { AnonymousLimitModal } from '@/components/auth/AnonymousLimitModal';
+import type { PromptCardData } from '@/types/prompt';
 
 interface PromptCardProps {
-  prompt: {
-    id: string;
-    title: string;
-    description: string;
-    prompt_content?: string;
-    whoFor: string[];
-    aiModels: string[];
-    tokenUsage: 'Low' | 'Medium' | 'High';
-    emoji?: string;
-    background_color?: string;
-    saves: number;
-    copies: number;
-    comments: number;
-    likes: number;
-    author: {
-      name: string;
-      avatar?: string;
-    };
-    isBookmarked?: boolean;
-    isLiked?: boolean;
-  };
+  prompt: PromptCardData;
   onCardClick?: (id: string) => void;
 }
 
-const getTokenUsageColor = (usage: 'Low' | 'Medium' | 'High') => {
+const getTokenUsageColor = (usage: 'low' | 'medium' | 'high') => {
   switch (usage) {
-    case 'Low': return 'text-success-foreground bg-success/10 dark:bg-success/20';
-    case 'Medium': return 'text-warning-foreground bg-warning/10 dark:bg-warning/20';
-    case 'High': return 'text-error-foreground bg-error/10 dark:bg-error/20';
+    case 'low': return 'text-success-foreground bg-success/10 dark:bg-success/20';
+    case 'medium': return 'text-warning-foreground bg-warning/10 dark:bg-warning/20';
+    case 'high': return 'text-error-foreground bg-error/10 dark:bg-error/20';
   }
 };
 
-const getTokenUsageIcon = (usage: 'Low' | 'Medium' | 'High') => {
+const getTokenUsageIcon = (usage: 'low' | 'medium' | 'high') => {
   switch (usage) {
-    case 'Low': return Zap;
-    case 'Medium': return Brain;
-    case 'High': return Sparkles;
+    case 'low': return Zap;
+    case 'medium': return Brain;
+    case 'high': return Sparkles;
   }
 };
 
@@ -131,7 +112,7 @@ export function PromptCard({ prompt, onCardClick }: PromptCardProps) {
               className={`${getTokenUsageColor(prompt.tokenUsage)} text-xs font-medium backdrop-blur-sm bg-background/80`}
             >
               <TokenIcon className="w-3 h-3 mr-1" />
-              {prompt.tokenUsage}
+              {prompt.tokenUsage.charAt(0).toUpperCase() + prompt.tokenUsage.slice(1)}
             </Badge>
           </div>
         </div>

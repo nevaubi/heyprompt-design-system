@@ -79,7 +79,7 @@ interface SimilarPrompt {
   likes: number;
   whoFor: string[];
   aiModels: string[];
-  tokenUsage: 'Low' | 'Medium' | 'High';
+  tokenUsage: 'low' | 'medium' | 'high';
   author: {
     name: string;
     avatar?: string;
@@ -212,7 +212,7 @@ Please provide your feedback in a structured format with specific examples and a
         likes: 45,
         whoFor: ['Developers'],
         aiModels: ['GPT-4'],
-        tokenUsage: 'High',
+        tokenUsage: 'high',
         author: { name: 'SecExpert' },
         isBookmarked: false,
         isLiked: false,

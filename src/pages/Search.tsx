@@ -45,7 +45,7 @@ interface SearchResult {
   likes: number;
   whoFor: string[];
   aiModels: string[];
-  tokenUsage: 'Low' | 'Medium' | 'High';
+  tokenUsage: 'low' | 'medium' | 'high';
   author: {
     name: string;
     avatar?: string;
@@ -117,7 +117,7 @@ export default function Search() {
           likes: 89,
           whoFor: ['Developers'],
           aiModels: ['GPT-4', 'Claude'],
-          tokenUsage: 'High',
+          tokenUsage: 'high',
           author: { name: 'CodeMaster' },
           isBookmarked: false,
           isLiked: false,

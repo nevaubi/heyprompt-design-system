@@ -55,7 +55,7 @@ interface UserPrompt {
   likes: number;
   whoFor: string[];
   aiModels: string[];
-  tokenUsage: 'Low' | 'Medium' | 'High';
+  tokenUsage: 'low' | 'medium' | 'high';
   author: {
     name: string;
     avatar?: string;
@@ -142,7 +142,7 @@ function UserProfileContent() {
         likes: 0, // TODO: Count from user_interactions
         whoFor: ['Developers'], // TODO: Join with tags
         aiModels: ['GPT-4'], // TODO: Join with tags
-        tokenUsage: prompt.token_usage as 'Low' | 'Medium' | 'High',
+        tokenUsage: prompt.token_usage as 'low' | 'medium' | 'high',
         author: {
           name: profile?.username || 'Anonymous',
         },

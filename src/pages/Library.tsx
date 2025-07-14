@@ -37,7 +37,7 @@ interface SavedPrompt {
   likes: number;
   whoFor: string[];
   aiModels: string[];
-  tokenUsage: 'Low' | 'Medium' | 'High';
+  tokenUsage: 'low' | 'medium' | 'high';
   author: {
     name: string;
     avatar?: string;
@@ -109,7 +109,7 @@ export default function Library() {
         likes: 0, // TODO: Count from user_interactions
         whoFor: ['Developers'], // TODO: Join with tags
         aiModels: ['GPT-4'], // TODO: Join with tags
-        tokenUsage: 'Medium' as const,
+        tokenUsage: 'medium' as const,
         author: {
           name: item.prompts.user_profiles?.username || 'Anonymous',
         },
