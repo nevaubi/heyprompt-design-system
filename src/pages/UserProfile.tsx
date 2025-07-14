@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Header } from '@/components/layout/Header';
-import { Footer } from '@/components/layout/Footer';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -208,41 +206,31 @@ function UserProfileContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
-        <Header />
-        <main className="container mx-auto px-4 py-8">
-          <div className="animate-pulse">
-            <div className="h-32 bg-muted rounded-lg mb-6" />
-            <div className="h-6 bg-muted rounded w-1/3 mb-4" />
-            <div className="h-4 bg-muted rounded w-2/3" />
-          </div>
-        </main>
-        <Footer />
+      <div className="container mx-auto px-4 py-8">
+        <div className="animate-pulse">
+          <div className="h-32 bg-muted rounded-lg mb-6" />
+          <div className="h-6 bg-muted rounded w-1/3 mb-4" />
+          <div className="h-4 bg-muted rounded w-2/3" />
+        </div>
       </div>
     );
   }
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-background">
-        <Header />
-        <main className="container mx-auto px-4 py-8">
-          <Card className="p-12 text-center">
-            <h1 className="text-2xl font-bold mb-2">User not found</h1>
-            <p className="text-muted-foreground">
-              The user "{username}" does not exist or has been removed.
-            </p>
-          </Card>
-        </main>
-        <Footer />
+      <div className="container mx-auto px-4 py-8">
+        <Card className="p-12 text-center">
+          <h1 className="text-2xl font-bold mb-2">User not found</h1>
+          <p className="text-muted-foreground">
+            The user "{username}" does not exist or has been removed.
+          </p>
+        </Card>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <main className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8">
         {/* Profile Header */}
         <Card className="p-8 mb-8">
           <div className="flex flex-col md:flex-row items-start gap-6">
@@ -385,8 +373,6 @@ function UserProfileContent() {
             </Card>
           </TabsContent>
         </Tabs>
-      </main>
-      <Footer />
     </div>
   );
 }

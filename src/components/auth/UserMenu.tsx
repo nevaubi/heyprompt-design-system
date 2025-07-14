@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Settings, BookOpen, LogOut, ChevronDown, Shield } from 'lucide-react';
@@ -12,6 +12,7 @@ export function UserMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const menuRef = useRef<HTMLDivElement>(null);
 
   if (!user) return null;
 
@@ -19,6 +20,31 @@ export function UserMenu() {
     await signOut();
     setIsOpen(false);
   };
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleEscapeKey);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [isOpen]);
 
   const getInitials = (email: string) => {
     return email.charAt(0).toUpperCase();
@@ -54,7 +80,7 @@ export function UserMenu() {
   ];
 
   return (
-    <div className="relative">
+    <div className="relative" ref={menuRef}>
       <Button
         variant="ghost"
         size="sm"
@@ -119,7 +145,8 @@ export function UserMenu() {
                       animate={{ opacity: 1 }}
                       transition={{ delay: index * 0.05 }}
                       className="w-full flex items-center space-x-3 px-3 py-2 text-sm text-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors"
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         navigate(item.href);
                         setIsOpen(false);
                       }}
@@ -135,7 +162,10 @@ export function UserMenu() {
                 {/* Sign Out */}
                 <div className="p-1">
                   <button
-                    onClick={handleSignOut}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSignOut();
+                    }}
                     className="w-full flex items-center space-x-3 px-3 py-2 text-sm text-destructive hover:bg-destructive/10 rounded-md transition-colors"
                   >
                     <LogOut className="w-4 h-4" />

@@ -112,21 +112,47 @@ export function Header() {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
           {navigation.map((item) => (
-            <motion.a
-              key={item.name}
-              href={item.href}
-              className="text-foreground/80 hover:text-foreground transition-colors relative"
-              whileHover={{ y: -2 }}
-              transition={{ type: "spring", stiffness: 400, damping: 17 }}
-            >
-              {item.name}
+            item.href.startsWith('#') ? (
+              <motion.a
+                key={item.name}
+                href={item.href}
+                className="text-foreground/80 hover:text-foreground transition-colors relative"
+                whileHover={{ y: -2 }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  const element = document.querySelector(item.href);
+                  element?.scrollIntoView({ behavior: 'smooth' });
+                }}
+              >
+                {item.name}
+                <motion.div
+                  className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-primary to-primary-light"
+                  initial={{ scaleX: 0 }}
+                  whileHover={{ scaleX: 1 }}
+                  transition={{ duration: 0.2 }}
+                />
+              </motion.a>
+            ) : (
               <motion.div
-                className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-primary to-primary-light"
-                initial={{ scaleX: 0 }}
-                whileHover={{ scaleX: 1 }}
-                transition={{ duration: 0.2 }}
-              />
-            </motion.a>
+                key={item.name}
+                whileHover={{ y: -2 }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              >
+                <Link
+                  to={item.href}
+                  className="text-foreground/80 hover:text-foreground transition-colors relative"
+                >
+                  {item.name}
+                  <motion.div
+                    className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-primary to-primary-light"
+                    initial={{ scaleX: 0 }}
+                    whileHover={{ scaleX: 1 }}
+                    transition={{ duration: 0.2 }}
+                  />
+                </Link>
+              </motion.div>
+            )
           ))}
         </nav>
 
