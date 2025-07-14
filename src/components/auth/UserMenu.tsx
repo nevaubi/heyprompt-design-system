@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Settings, BookOpen, LogOut, ChevronDown } from 'lucide-react';
@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 
 export function UserMenu() {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,8 +24,30 @@ export function UserMenu() {
     return email.charAt(0).toUpperCase();
   };
 
+  const [profile, setProfile] = useState<{ username?: string } | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      fetchUserProfile();
+    }
+  }, [user]);
+
+  const fetchUserProfile = async () => {
+    try {
+      const { data } = await supabase
+        .from('user_profiles')
+        .select('username')
+        .eq('id', user?.id)
+        .single();
+      
+      setProfile(data);
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+    }
+  };
+
   const menuItems = [
-    { icon: User, label: 'My Profile', href: '/u/username' },
+    { icon: User, label: 'My Profile', href: `/u/${profile?.username || 'profile'}` },
     { icon: BookOpen, label: 'My Library', href: '/library' },
     { icon: Settings, label: 'Settings', href: '/settings' },
   ];

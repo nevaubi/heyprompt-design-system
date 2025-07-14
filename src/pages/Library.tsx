@@ -85,7 +85,7 @@ export default function Library() {
             copy_count,
             view_count,
             created_by,
-            user_profiles (
+            user_profiles!prompts_created_by_fkey (
               username
             )
           )

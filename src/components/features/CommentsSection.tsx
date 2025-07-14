@@ -66,7 +66,10 @@ export function CommentsSection({ promptId, onCommentCountChange }: CommentsSect
           content,
           created_at,
           updated_at,
-          user_id
+          user_id,
+          user_profiles (
+            username
+          )
         `)
         .eq('prompt_id', promptId)
         .order('created_at', { ascending: true });
@@ -80,7 +83,7 @@ export function CommentsSection({ promptId, onCommentCountChange }: CommentsSect
         updated_at: comment.updated_at,
         user_id: comment.user_id,
         author: {
-          username: 'Anonymous', // TODO: Fetch from user_profiles
+          username: comment.user_profiles?.username || 'Anonymous',
         },
         replies: [], // TODO: Implement nested replies
       }));

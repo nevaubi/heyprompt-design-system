@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { PromptCard } from '@/components/features/PromptCard';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { 
@@ -63,7 +64,7 @@ interface UserPrompt {
   isLiked: boolean;
 }
 
-export default function UserProfile() {
+function UserProfileContent() {
   const { username } = useParams<{ username: string }>();
   const { user } = useAuth();
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -95,7 +96,7 @@ export default function UserProfile() {
         .from('user_profiles')
         .select('*')
         .eq('username', username)
-        .single();
+        .maybeSingle();
 
       if (profileError) throw profileError;
 
@@ -378,5 +379,13 @@ export default function UserProfile() {
       </main>
       <Footer />
     </div>
+  );
+}
+
+export default function UserProfile() {
+  return (
+    <ProtectedRoute>
+      <UserProfileContent />
+    </ProtectedRoute>
   );
 }
