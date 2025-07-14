@@ -88,7 +88,14 @@ export default function Library() {
             created_by,
             token_usage,
             emoji,
-            background_color
+            background_color,
+            prompt_tags (
+              tags (
+                id,
+                name,
+                type
+              )
+            )
           )
         `)
         .eq('user_id', user?.id)
@@ -140,8 +147,8 @@ export default function Library() {
         copies: item.prompts.copy_count || 0,
         comments: 0, // TODO: Count from comments table
         likes: 0, // TODO: Count from user_interactions
-        whoFor: ['Developers'], // TODO: Join with tags
-        aiModels: ['GPT-4'], // TODO: Join with tags
+        whoFor: item.prompts.prompt_tags?.filter((pt: any) => pt.tags.type === 'who_for').map((pt: any) => pt.tags.name) || [],
+        aiModels: item.prompts.prompt_tags?.filter((pt: any) => pt.tags.type === 'ai_model').map((pt: any) => pt.tags.name) || [],
         tokenUsage: (item.prompts.token_usage || 'medium') as 'low' | 'medium' | 'high',
         emoji: item.prompts.emoji || '🎨',
         background_color: item.prompts.background_color || 'gradient-blue',
