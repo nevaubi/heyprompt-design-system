@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Star, Copy, ExternalLink } from 'lucide-react';
+import { Star, Copy, ExternalLink, FileText, ArrowRight } from 'lucide-react';
 import { supabase } from "@/integrations/supabase/client";
 
 interface SamplePrompt {
@@ -133,6 +133,31 @@ export function SamplePrompts() {
               </div>
             ))}
           </div>
+        ) : samplePrompts.length === 0 ? (
+          <motion.div
+            className="text-center py-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+              <FileText className="w-12 h-12 text-primary" />
+            </div>
+            <h3 className="text-2xl font-semibold mb-4">No prompts yet</h3>
+            <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+              Be the first to share your amazing prompts with the HeyPrompt! community!
+            </p>
+            <a href="/submit">
+              <Button 
+                size="lg" 
+                className="bg-gradient-to-r from-primary to-primary-light hover:shadow-glow transition-all duration-300"
+              >
+                Submit First Prompt
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </a>
+          </motion.div>
         ) : (
           <motion.div
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12"

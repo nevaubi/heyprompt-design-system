@@ -74,9 +74,11 @@ export function EmptyState({ type, searchQuery, onReset }: EmptyStateProps) {
           </Button>
         )}
         
-        <Button className="bg-gradient-to-r from-primary to-primary-light">
-          {isNoResults ? 'Browse All Prompts' : 'Submit a Prompt'}
-        </Button>
+        <a href={isNoResults ? '/browse' : '/submit'}>
+          <Button className="bg-gradient-to-r from-primary to-primary-light">
+            {isNoResults ? 'Browse All Prompts' : 'Submit a Prompt'}
+          </Button>
+        </a>
       </motion.div>
     </motion.div>
   );

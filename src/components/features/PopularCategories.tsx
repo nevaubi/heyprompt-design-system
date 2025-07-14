@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import { FileText, ArrowRight } from 'lucide-react';
 import { supabase } from "@/integrations/supabase/client";
 
 interface Category {
@@ -183,6 +184,57 @@ export function PopularCategories() {
         </motion.div>
       </div>
     </section>
+    );
+  }
+
+  if (categories.length === 0) {
+    return (
+      <section id="categories" className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <motion.div
+            className="text-center mb-12"
+            initial={{ y: 20, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Browse by{' '}
+              <span className="bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">
+                Category
+              </span>
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Explore prompts organized by use case and industry
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="text-center py-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+              <FileText className="w-12 h-12 text-primary" />
+            </div>
+            <h3 className="text-2xl font-semibold mb-4">No categories yet</h3>
+            <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+              Categories will appear here as users submit prompts in different areas.
+            </p>
+            <a href="/submit">
+              <Button 
+                size="lg" 
+                className="bg-gradient-to-r from-primary to-primary-light hover:shadow-glow transition-all duration-300"
+              >
+                Submit First Prompt
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </a>
+          </motion.div>
+        </div>
+      </section>
     );
   }
 
