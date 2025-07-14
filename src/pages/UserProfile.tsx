@@ -121,7 +121,16 @@ function UserProfileContent() {
     try {
       const { data, error } = await supabase
         .from('prompts')
-        .select('*')
+        .select(`
+          *,
+          prompt_tags (
+            tags (
+              id,
+              name,
+              type
+            )
+          )
+        `)
         .eq('created_by', userId)
         .eq('is_published', true)
         .order('created_at', { ascending: false });
@@ -140,8 +149,8 @@ function UserProfileContent() {
         copies: prompt.copy_count || 0,
         comments: 0, // TODO: Count from comments table
         likes: 0, // TODO: Count from user_interactions
-        whoFor: ['Developers'], // TODO: Join with tags
-        aiModels: ['GPT-4'], // TODO: Join with tags
+        whoFor: prompt.prompt_tags?.filter((pt: any) => pt.tags.type === 'who_for').map((pt: any) => pt.tags.name) || [],
+        aiModels: prompt.prompt_tags?.filter((pt: any) => pt.tags.type === 'ai_model').map((pt: any) => pt.tags.name) || [],
         tokenUsage: prompt.token_usage as 'low' | 'medium' | 'high',
         author: {
           name: profile?.username || 'Anonymous',
