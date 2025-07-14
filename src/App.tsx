@@ -1,3 +1,6 @@
+import { Suspense, lazy } from 'react';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { SEO } from '@/components/SEO';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -5,48 +8,175 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/lib/theme-provider";
 import { AuthProvider } from "@/contexts/AuthContext";
-import Index from "./pages/Index";
-import Browse from "./pages/Browse";
-import Search from "./pages/Search";
-import PromptDetail from "./pages/PromptDetail";
-import Auth from "./pages/Auth";
-import Library from "./pages/Library";
-import UserProfile from "./pages/UserProfile";
-import SubmitPrompt from "./pages/SubmitPrompt";
-import NotFound from "./pages/NotFound";
+import { useGlobalShortcuts, useKonamiCode } from "@/hooks/useKeyboardShortcuts";
+import { analytics, usePageTracking, useUserTracking } from "@/lib/analytics";
+import { useAuth } from "@/contexts/AuthContext";
+import { Enhanced404 } from "@/components/ErrorBoundary";
 
-const queryClient = new QueryClient();
+// Lazy load pages for code splitting
+const Index = lazy(() => import("./pages/Index"));
+const Browse = lazy(() => import("./pages/Browse"));
+const Search = lazy(() => import("./pages/Search"));
+const PromptDetail = lazy(() => import("./pages/PromptDetail"));
+const Auth = lazy(() => import("./pages/Auth"));
+const Library = lazy(() => import("./pages/Library"));
+const UserProfile = lazy(() => import("./pages/UserProfile"));
+const SubmitPrompt = lazy(() => import("./pages/SubmitPrompt"));
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: (failureCount, error: any) => {
+        // Don't retry on 4xx errors
+        if (error?.status >= 400 && error?.status < 500) {
+          return false;
+        }
+        // Retry up to 3 times on other errors
+        return failureCount < 3;
+      },
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    },
+  },
+});
+
+// Loading component for Suspense
+function PageLoader() {
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+    </div>
+  );
+}
+
+// Main app component with hooks
+function AppContent() {
+  const { user } = useAuth();
+  
+  // Set up global functionality
+  useGlobalShortcuts();
+  usePageTracking();
+  useUserTracking(user?.id || null);
+  
+  // Easter egg
+  useKonamiCode(() => {
+    analytics.featureUsed('konami_code');
+    // TODO: Add fun animation or message
+    console.log('🎮 Konami code activated!');
+  });
+
+  return (
+    <Routes>
+      <Route 
+        path="/" 
+        element={
+          <Suspense fallback={<PageLoader />}>
+            <SEO />
+            <Index />
+          </Suspense>
+        } 
+      />
+      <Route 
+        path="/browse" 
+        element={
+          <Suspense fallback={<PageLoader />}>
+            <SEO 
+              title="Browse AI Prompts - HeyPrompt"
+              description="Discover thousands of AI prompts for ChatGPT, Claude, and more. Filter by category, rating, and AI model."
+            />
+            <Browse />
+          </Suspense>
+        } 
+      />
+      <Route 
+        path="/search" 
+        element={
+          <Suspense fallback={<PageLoader />}>
+            <SEO 
+              title="Search Results - HeyPrompt"
+              description="Search results for AI prompts, users, and tags."
+            />
+            <Search />
+          </Suspense>
+        } 
+      />
+      <Route 
+        path="/prompts/:id" 
+        element={
+          <Suspense fallback={<PageLoader />}>
+            <PromptDetail />
+          </Suspense>
+        } 
+      />
+      <Route 
+        path="/auth" 
+        element={
+          <Suspense fallback={<PageLoader />}>
+            <SEO 
+              title="Sign In - HeyPrompt"
+              description="Sign in to save prompts, create collections, and join our community."
+            />
+            <Auth />
+          </Suspense>
+        } 
+      />
+      <Route 
+        path="/library" 
+        element={
+          <Suspense fallback={<PageLoader />}>
+            <SEO 
+              title="My Library - HeyPrompt"
+              description="Manage your saved prompts, folders, and submissions."
+            />
+            <Library />
+          </Suspense>
+        } 
+      />
+      <Route 
+        path="/submit" 
+        element={
+          <Suspense fallback={<PageLoader />}>
+            <SEO 
+              title="Submit Prompt - HeyPrompt"
+              description="Share your AI prompt with the community and help others discover great prompts."
+            />
+            <SubmitPrompt />
+          </Suspense>
+        } 
+      />
+      <Route 
+        path="/u/:username" 
+        element={
+          <Suspense fallback={<PageLoader />}>
+            <UserProfile />
+          </Suspense>
+        } 
+      />
+      <Route path="*" element={<Enhanced404 />} />
+    </Routes>
+  );
+}
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-    >
-      <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/browse" element={<Browse />} />
-              <Route path="/search" element={<Search />} />
-              <Route path="/prompts/:id" element={<PromptDetail />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/library" element={<Library />} />
-              <Route path="/submit" element={<SubmitPrompt />} />
-              <Route path="/u/:username" element={<UserProfile />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </AuthProvider>
-    </ThemeProvider>
-  </QueryClientProvider>
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+      >
+        <AuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <AppContent />
+            </BrowserRouter>
+          </TooltipProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 export default App;
