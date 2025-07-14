@@ -92,141 +92,160 @@ export function PromptCard({ prompt, onCardClick }: PromptCardProps) {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.3 }}
       whileHover={{ 
-        y: -4,
+        y: -6,
         transition: { type: "spring", stiffness: 400, damping: 17 }
       }}
       onClick={() => onCardClick?.(prompt.id)}
       className="cursor-pointer"
     >
-      <Card className="h-full glass border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300 group overflow-hidden">
-        {/* Emoji Section */}
-        <div className="relative h-48 overflow-hidden">
+      <Card className="h-full border-border/50 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 group overflow-hidden bg-card/50 backdrop-blur-sm">
+        {/* Header with emoji and token usage */}
+        <div className="relative h-32 overflow-hidden">
           <div className={`w-full h-full flex items-center justify-center group-hover:scale-105 transition-transform duration-300 ${getBackgroundClass(prompt.background_color)}`}>
-            <span className="text-4xl">{prompt.emoji || '🎨'}</span>
+            <span className="text-3xl drop-shadow-sm">{prompt.emoji || '🎨'}</span>
           </div>
           
-          {/* Token Usage Badge */}
-          <div className="absolute top-3 left-3">
+          {/* Token Usage Badge - Top Right */}
+          <div className="absolute top-3 right-3">
             <Badge 
               variant="secondary" 
-              className={`${getTokenUsageColor(prompt.tokenUsage)} text-xs font-medium backdrop-blur-sm bg-background/80`}
+              className={`${getTokenUsageColor(prompt.tokenUsage)} text-xs font-semibold backdrop-blur-md bg-background/90 border border-background/20 shadow-sm`}
             >
-              <TokenIcon className="w-3 h-3 mr-1" />
-              {prompt.tokenUsage.charAt(0).toUpperCase() + prompt.tokenUsage.slice(1)}
+              <TokenIcon className="w-3 h-3 mr-1.5" />
+              {prompt.tokenUsage.toUpperCase()}
             </Badge>
           </div>
         </div>
 
-        <div className="p-6">
-          {/* Header */}
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-2">
+        <div className="p-5 space-y-4">
+          {/* Title and Description */}
+          <div className="space-y-3">
+            <h3 className="text-base font-semibold leading-tight group-hover:text-primary transition-colors line-clamp-2">
               {prompt.title}
             </h3>
-            <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
+            <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
               {prompt.description}
             </p>
           </div>
 
-          {/* Who it's for tags */}
+          {/* Categories Section */}
           {prompt.whoFor.length > 0 && (
-            <div className="flex flex-wrap gap-1 mb-3">
-              {prompt.whoFor.slice(0, 3).map((tag) => (
-                <Badge 
-                  key={tag} 
-                  variant="outline" 
-                  className="text-xs border-primary/20 text-primary hover:bg-primary/10 transition-colors"
-                >
-                  {tag}
-                </Badge>
-              ))}
-              {prompt.whoFor.length > 3 && (
-                <Badge variant="outline" className="text-xs border-border/50 text-muted-foreground">
-                  +{prompt.whoFor.length - 3}
-                </Badge>
-              )}
+            <div className="space-y-2">
+              <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                For
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {prompt.whoFor.slice(0, 3).map((tag) => (
+                  <Badge 
+                    key={tag} 
+                    variant="outline" 
+                    className="text-xs px-2 py-1 border-primary/30 text-primary bg-primary/5 hover:bg-primary/10 transition-colors font-medium"
+                  >
+                    {tag}
+                  </Badge>
+                ))}
+                {prompt.whoFor.length > 3 && (
+                  <Badge variant="outline" className="text-xs px-2 py-1 border-border/50 text-muted-foreground bg-muted/50">
+                    +{prompt.whoFor.length - 3}
+                  </Badge>
+                )}
+              </div>
             </div>
           )}
 
-          {/* AI Models */}
+          {/* AI Models Section */}
           {prompt.aiModels.length > 0 && (
-            <div className="flex flex-wrap gap-1 mb-4">
-              {prompt.aiModels.slice(0, 2).map((model) => (
-                <Badge 
-                  key={model} 
-                  variant="secondary" 
-                  className="text-xs bg-secondary/50 hover:bg-secondary transition-colors"
-                >
-                  {model}
-                </Badge>
-              ))}
-              {prompt.aiModels.length > 2 && (
-                <Badge variant="secondary" className="text-xs bg-secondary/50">
-                  +{prompt.aiModels.length - 2}
-                </Badge>
-              )}
+            <div className="space-y-2">
+              <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                Models
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {prompt.aiModels.slice(0, 2).map((model) => (
+                  <Badge 
+                    key={model} 
+                    variant="secondary" 
+                    className="text-xs px-2 py-1 bg-secondary/60 hover:bg-secondary transition-colors font-medium"
+                  >
+                    {model}
+                  </Badge>
+                ))}
+                {prompt.aiModels.length > 2 && (
+                  <Badge variant="secondary" className="text-xs px-2 py-1 bg-secondary/60 font-medium">
+                    +{prompt.aiModels.length - 2}
+                  </Badge>
+                )}
+              </div>
             </div>
           )}
 
+          {/* Stats and Actions */}
+          <div className="pt-3 border-t border-border/30">
+            {/* Stats Row */}
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                <div className="flex items-center gap-1">
+                  <Bookmark className="w-3 h-3" />
+                  <span className="font-medium">{formatNumber(prompt.saves)}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Copy className="w-3 h-3" />
+                  <span className="font-medium">{formatNumber(prompt.copies)}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <MessageCircle className="w-3 h-3" />
+                  <span className="font-medium">{formatNumber(prompt.comments)}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Heart className="w-3 h-3" />
+                  <span className="font-medium">{formatNumber(prompt.likes)}</span>
+                </div>
+              </div>
+            </div>
 
-          {/* Stats */}
-          <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
-            <span>{formatNumber(prompt.saves)} saves</span>
-            <span>•</span>
-            <span>{formatNumber(prompt.copies)} copies</span>
-          </div>
-
-          {/* Bottom Actions */}
-          <div className="flex items-center justify-between pt-4 border-t border-border/50">
-            <div className="flex items-center space-x-1">
+            {/* Action Buttons */}
+            <div className="flex items-center gap-2">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button 
-                    variant="ghost" 
+                    variant="outline" 
                     size="sm" 
-                    className="w-8 h-8 p-0 hover:bg-primary/10"
+                    className="flex-1 h-9 text-xs font-medium hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all"
                     onClick={(e) => handleAction(e, () => handleCopyPrompt(prompt.prompt_content || prompt.description, prompt.title))}
                   >
-                    <Copy className="w-4 h-4" />
+                    <Copy className="w-3.5 h-3.5 mr-1.5" />
+                    Copy
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>Copy prompt</TooltipContent>
+                <TooltipContent>Copy prompt to clipboard</TooltipContent>
               </Tooltip>
 
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button 
-                    variant="ghost" 
+                    variant={prompt.isBookmarked ? "default" : "outline"}
                     size="sm" 
-                    className={`w-8 h-8 p-0 ${prompt.isBookmarked ? 'text-primary' : ''} hover:bg-primary/10`}
+                    className="w-9 h-9 p-0 hover:scale-105 transition-all"
                     onClick={(e) => handleAction(e, () => handleBookmarkPrompt(prompt.id))}
                   >
-                    <Bookmark className={`w-4 h-4 ${prompt.isBookmarked ? 'fill-current' : ''}`} />
+                    <Bookmark className={`w-3.5 h-3.5 ${prompt.isBookmarked ? 'fill-current' : ''}`} />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>Bookmark</TooltipContent>
+                <TooltipContent>Save to bookmarks</TooltipContent>
               </Tooltip>
 
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button 
-                    variant="ghost" 
+                    variant="outline"
                     size="sm" 
-                    className={`w-8 h-8 p-0 ${prompt.isLiked ? 'text-heart' : ''} hover:bg-heart/10 dark:hover:bg-heart/20`}
+                    className={`w-9 h-9 p-0 hover:scale-105 transition-all ${prompt.isLiked ? 'text-heart border-heart bg-heart/10' : 'hover:text-heart hover:border-heart'}`}
                     onClick={(e) => handleAction(e, () => handleLikePrompt(prompt.id))}
                   >
-                    <Heart className={`w-4 h-4 ${prompt.isLiked ? 'fill-current' : ''}`} />
+                    <Heart className={`w-3.5 h-3.5 ${prompt.isLiked ? 'fill-current' : ''}`} />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>Like</TooltipContent>
+                <TooltipContent>Like this prompt</TooltipContent>
               </Tooltip>
-            </div>
-
-            <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-              <MessageCircle className="w-3 h-3" />
-              <span>{formatNumber(prompt.comments)}</span>
-              <Heart className="w-3 h-3" />
-              <span>{formatNumber(prompt.likes)}</span>
             </div>
           </div>
         </div>
