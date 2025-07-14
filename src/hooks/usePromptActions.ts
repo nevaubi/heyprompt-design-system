@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAnonymousLimits } from './useAnonymousLimits';
 import { useToast } from './use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 interface UsePromptActionsProps {
   onShowAuthModal?: () => void;
@@ -67,16 +68,56 @@ export function usePromptActions({ onShowAuthModal, onShowLimitModal }: UsePromp
 
     setIsLoading(true);
     try {
-      // TODO: Implement actual like functionality with Supabase
-      toast({
-        title: 'Liked!',
-        description: 'Added to your liked prompts.',
-      });
+      // Check if user has already liked this prompt
+      const { data: existingLike, error: checkError } = await supabase
+        .from('user_interactions')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('prompt_id', promptId)
+        .eq('interaction_type', 'like')
+        .single();
+
+      if (checkError && checkError.code !== 'PGRST116') {
+        throw checkError;
+      }
+
+      if (existingLike) {
+        // Remove like
+        const { error: deleteError } = await supabase
+          .from('user_interactions')
+          .delete()
+          .eq('id', existingLike.id);
+
+        if (deleteError) throw deleteError;
+
+        toast({
+          title: 'Unliked!',
+          description: 'Removed from your liked prompts.',
+        });
+      } else {
+        // Add like
+        const { error: insertError } = await supabase
+          .from('user_interactions')
+          .insert([{
+            user_id: user.id,
+            prompt_id: promptId,
+            interaction_type: 'like'
+          }]);
+
+        if (insertError) throw insertError;
+
+        toast({
+          title: 'Liked!',
+          description: 'Added to your liked prompts.',
+        });
+      }
+      
       return true;
     } catch (error) {
+      console.error('Error handling like:', error);
       toast({
         title: 'Error',
-        description: 'Failed to like prompt. Please try again.',
+        description: 'Failed to update like. Please try again.',
         variant: 'destructive',
       });
       return false;
@@ -93,16 +134,56 @@ export function usePromptActions({ onShowAuthModal, onShowLimitModal }: UsePromp
 
     setIsLoading(true);
     try {
-      // TODO: Implement actual bookmark functionality with Supabase
-      toast({
-        title: 'Bookmarked!',
-        description: 'Added to your bookmarks.',
-      });
+      // Check if user has already bookmarked this prompt
+      const { data: existingBookmark, error: checkError } = await supabase
+        .from('user_interactions')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('prompt_id', promptId)
+        .eq('interaction_type', 'bookmark')
+        .single();
+
+      if (checkError && checkError.code !== 'PGRST116') {
+        throw checkError;
+      }
+
+      if (existingBookmark) {
+        // Remove bookmark
+        const { error: deleteError } = await supabase
+          .from('user_interactions')
+          .delete()
+          .eq('id', existingBookmark.id);
+
+        if (deleteError) throw deleteError;
+
+        toast({
+          title: 'Bookmark removed!',
+          description: 'Removed from your bookmarks.',
+        });
+      } else {
+        // Add bookmark
+        const { error: insertError } = await supabase
+          .from('user_interactions')
+          .insert([{
+            user_id: user.id,
+            prompt_id: promptId,
+            interaction_type: 'bookmark'
+          }]);
+
+        if (insertError) throw insertError;
+
+        toast({
+          title: 'Bookmarked!',
+          description: 'Added to your bookmarks.',
+        });
+      }
+      
       return true;
     } catch (error) {
+      console.error('Error handling bookmark:', error);
       toast({
         title: 'Error',
-        description: 'Failed to bookmark prompt. Please try again.',
+        description: 'Failed to update bookmark. Please try again.',
         variant: 'destructive',
       });
       return false;

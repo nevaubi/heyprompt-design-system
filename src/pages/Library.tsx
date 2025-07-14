@@ -76,7 +76,7 @@ export default function Library() {
         .from('user_interactions')
         .select(`
           prompt_id,
-          prompts (
+          prompts!inner (
             id,
             title,
             description,
@@ -84,6 +84,9 @@ export default function Library() {
             copy_count,
             view_count,
             created_by,
+            token_usage,
+            emoji,
+            background_color,
             user_profiles!prompts_created_by_fkey (
               username
             )
@@ -94,12 +97,24 @@ export default function Library() {
 
       if (error) throw error;
 
+      // Get user's likes for these prompts
+      const promptIds = data.map(item => item.prompt_id);
+      const { data: likesData } = await supabase
+        .from('user_interactions')
+        .select('prompt_id')
+        .eq('user_id', user?.id)
+        .eq('interaction_type', 'like')
+        .in('prompt_id', promptIds);
+
+      const likedPromptIds = new Set(likesData?.map(like => like.prompt_id) || []);
+
       // Transform data to match our interface
       const transformedPrompts: SavedPrompt[] = data.map((item: any) => ({
         id: item.prompt_id,
         title: item.prompts.title,
         description: item.prompts.description,
         content: item.prompts.prompt_content,
+        prompt_content: item.prompts.prompt_content,
         rating: 4.5, // TODO: Calculate from ratings table
         reviewCount: 12, // TODO: Count from ratings table
         saves: 0, // TODO: Count from user_interactions
@@ -108,12 +123,14 @@ export default function Library() {
         likes: 0, // TODO: Count from user_interactions
         whoFor: ['Developers'], // TODO: Join with tags
         aiModels: ['GPT-4'], // TODO: Join with tags
-        tokenUsage: 'medium' as const,
+        tokenUsage: (item.prompts.token_usage || 'medium') as 'low' | 'medium' | 'high',
+        emoji: item.prompts.emoji || '🎨',
+        background_color: item.prompts.background_color || 'gradient-blue',
         author: {
           name: item.prompts.user_profiles?.username || 'Anonymous',
         },
         isBookmarked: true,
-        isLiked: false, // TODO: Check user_interactions
+        isLiked: likedPromptIds.has(item.prompt_id),
       }));
 
       setSavedPrompts(transformedPrompts);
