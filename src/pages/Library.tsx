@@ -72,6 +72,8 @@ export default function Library() {
 
   const fetchSavedPrompts = async () => {
     try {
+      console.log('Fetching saved prompts for user:', user?.id);
+      
       const { data, error } = await supabase
         .from('user_interactions')
         .select(`
@@ -86,14 +88,31 @@ export default function Library() {
             created_by,
             token_usage,
             emoji,
-            background_color,
-            user_profiles!prompts_created_by_fkey (
-              username
-            )
+            background_color
           )
         `)
         .eq('user_id', user?.id)
         .eq('interaction_type', 'bookmark');
+
+      if (error) {
+        console.error('Error in main query:', error);
+        throw error;
+      }
+
+      console.log('Fetched bookmark data:', data);
+
+      // Get user profiles separately
+      const userIds = [...new Set(data.map(item => item.prompts.created_by).filter(Boolean))];
+      const { data: profilesData, error: profilesError } = await supabase
+        .from('user_profiles')
+        .select('id, username')
+        .in('id', userIds);
+
+      if (profilesError) {
+        console.error('Error fetching profiles:', profilesError);
+      }
+
+      const profilesMap = new Map(profilesData?.map(profile => [profile.id, profile]) || []);
 
       if (error) throw error;
 
@@ -127,7 +146,7 @@ export default function Library() {
         emoji: item.prompts.emoji || '🎨',
         background_color: item.prompts.background_color || 'gradient-blue',
         author: {
-          name: item.prompts.user_profiles?.username || 'Anonymous',
+          name: profilesMap.get(item.prompts.created_by)?.username || 'Anonymous',
         },
         isBookmarked: true,
         isLiked: likedPromptIds.has(item.prompt_id),
@@ -148,10 +167,7 @@ export default function Library() {
 
   const fetchFolders = async () => {
     // TODO: Implement folders table and fetch user folders
-    setFolders([
-      { id: '1', name: 'Favorites', description: 'My favorite prompts', promptCount: 12, createdAt: '2024-01-15' },
-      { id: '2', name: 'Work Projects', description: 'Prompts for work', promptCount: 8, createdAt: '2024-01-20' },
-    ]);
+    setFolders([]);
   };
 
   const createFolder = async () => {
