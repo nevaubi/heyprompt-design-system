@@ -86,6 +86,7 @@ export type Database = {
           created_by: string | null
           description: string
           id: string
+          image_url: string | null
           is_published: boolean | null
           parent_prompt_id: string | null
           prompt_content: string
@@ -101,6 +102,7 @@ export type Database = {
           created_by?: string | null
           description: string
           id?: string
+          image_url?: string | null
           is_published?: boolean | null
           parent_prompt_id?: string | null
           prompt_content: string
@@ -116,6 +118,7 @@ export type Database = {
           created_by?: string | null
           description?: string
           id?: string
+          image_url?: string | null
           is_published?: boolean | null
           parent_prompt_id?: string | null
           prompt_content?: string

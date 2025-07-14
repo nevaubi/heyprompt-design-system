@@ -23,12 +23,10 @@ interface PromptCardProps {
     id: string;
     title: string;
     description: string;
-    content?: string;
+    prompt_content?: string;
     whoFor: string[];
     aiModels: string[];
     tokenUsage: 'Low' | 'Medium' | 'High';
-    rating: number;
-    reviewCount: number;
     imageUrl?: string;
     saves: number;
     copies: number;
@@ -140,13 +138,6 @@ export function PromptCard({ prompt, onCardClick }: PromptCardProps) {
               </Badge>
             </div>
 
-            {/* Rating */}
-            <div className="absolute top-3 right-3">
-              <Badge variant="secondary" className="bg-background/80 backdrop-blur text-xs">
-                <Star className="w-3 h-3 mr-1 fill-star text-star" />
-                {prompt.rating}
-              </Badge>
-            </div>
           </div>
         )}
 
@@ -201,14 +192,6 @@ export function PromptCard({ prompt, onCardClick }: PromptCardProps) {
             </div>
           )}
 
-          {/* Rating and Reviews */}
-          <div className="flex items-center space-x-4 mb-4 text-sm">
-            <div className="flex items-center space-x-1">
-              <Star className="w-4 h-4 fill-star text-star" />
-              <span className="font-medium">{prompt.rating}</span>
-              <span className="text-muted-foreground">({formatNumber(prompt.reviewCount)} reviews)</span>
-            </div>
-          </div>
 
           {/* Stats */}
           <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
@@ -226,7 +209,7 @@ export function PromptCard({ prompt, onCardClick }: PromptCardProps) {
                     variant="ghost" 
                     size="sm" 
                     className="w-8 h-8 p-0 hover:bg-primary/10"
-                    onClick={(e) => handleAction(e, () => handleCopyPrompt(prompt.content || prompt.description, prompt.title))}
+                    onClick={(e) => handleAction(e, () => handleCopyPrompt(prompt.prompt_content || prompt.description, prompt.title))}
                   >
                     <Copy className="w-4 h-4" />
                   </Button>

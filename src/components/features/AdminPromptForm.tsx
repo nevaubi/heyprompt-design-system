@@ -21,6 +21,7 @@ interface FormData {
   token_usage: string;
   is_published: boolean;
   selectedTags: string[];
+  image_url: string;
 }
 
 export function AdminPromptForm() {
@@ -34,7 +35,8 @@ export function AdminPromptForm() {
     prompt_content: '',
     token_usage: 'medium',
     is_published: true,
-    selectedTags: []
+    selectedTags: [],
+    image_url: ''
   });
 
   useEffect(() => {
@@ -88,7 +90,8 @@ export function AdminPromptForm() {
           prompt_content: formData.prompt_content.trim(),
           token_usage: formData.token_usage,
           is_published: formData.is_published,
-          created_by: user.id
+          created_by: user.id,
+          image_url: formData.image_url.trim() || null
         })
         .select()
         .single();
@@ -121,7 +124,8 @@ export function AdminPromptForm() {
         prompt_content: '',
         token_usage: 'medium',
         is_published: true,
-        selectedTags: []
+        selectedTags: [],
+        image_url: ''
       });
 
     } catch (error) {
@@ -143,7 +147,8 @@ export function AdminPromptForm() {
       prompt_content: '',
       token_usage: 'medium',
       is_published: true,
-      selectedTags: []
+      selectedTags: [],
+      image_url: ''
     });
   };
 
@@ -202,6 +207,17 @@ export function AdminPromptForm() {
                     <SelectItem value="high">High (500+ tokens)</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="image_url">Image URL (optional)</Label>
+                <Input
+                  id="image_url"
+                  type="url"
+                  value={formData.image_url}
+                  onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))}
+                  placeholder="https://example.com/image.jpg"
+                />
               </div>
 
               <div className="flex items-center space-x-2">
