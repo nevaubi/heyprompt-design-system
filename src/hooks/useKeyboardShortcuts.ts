@@ -132,7 +132,6 @@ export function useKonamiCode(callback: () => void) {
   }, [callback]);
 }
 
-import { useEffect, useCallback, useState } from 'react';
 // Command palette hook (placeholder for future implementation)
 export function useCommandPalette() {
   const [isOpen, setIsOpen] = useState(false);

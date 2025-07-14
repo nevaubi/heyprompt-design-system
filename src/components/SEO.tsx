@@ -111,7 +111,7 @@ export function generatePromptStructuredData(prompt: {
   };
 
   // Add or update structured data script
-  let script = document.querySelector('script[type="application/ld+json"]');
+  let script = document.querySelector('script[type="application/ld+json"]') as HTMLScriptElement;
   if (!script) {
     script = document.createElement('script');
     script.type = 'application/ld+json';

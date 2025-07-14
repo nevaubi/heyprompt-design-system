@@ -16,7 +16,7 @@ class Analytics {
     
     // Respect user privacy preferences
     if (typeof window !== 'undefined') {
-      this.isEnabled = !window.doNotTrack && !navigator.doNotTrack;
+      this.isEnabled = !navigator.doNotTrack && navigator.doNotTrack !== '1';
     }
   }
 

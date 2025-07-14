@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 interface UseRetryOptions {
   maxRetries?: number;
@@ -111,7 +111,7 @@ export async function fetchWithRetry(
 export function useNetworkStatus() {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
-  useState(() => {
+  useEffect(() => {
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
 
@@ -122,7 +122,7 @@ export function useNetworkStatus() {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
     };
-  });
+  }, []);
 
   return isOnline;
 }
