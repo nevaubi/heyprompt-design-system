@@ -58,6 +58,7 @@ export function Header() {
   }, [user]);
 
   const handleNavigation = (path: string) => {
+    console.log('Navigation called with path:', path);
     setIsMobileMenuOpen(false);
     navigate(path);
   };
@@ -191,7 +192,7 @@ export function Header() {
           />
           
           <motion.div
-            className="sm:hidden fixed top-14 left-0 right-0 z-60 bg-background border border-border shadow-lg max-h-[60vh] overflow-y-auto"
+            className="sm:hidden fixed top-14 left-0 right-0 z-50 bg-background border border-border shadow-lg max-h-[60vh] overflow-y-auto"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
@@ -242,14 +243,24 @@ export function Header() {
               {user && (
                 <div className="space-y-1 pt-2 border-t border-border">
                   <button
-                    onClick={() => handleNavigation('/library')}
-                    className="w-full text-left block text-foreground hover:text-primary active:bg-muted/70 transition-colors py-4 px-4 text-base font-medium rounded-lg hover:bg-muted/50 min-h-[44px] flex items-center"
+                    onClick={(e) => {
+                      console.log('Mobile Library button clicked');
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleNavigation('/library');
+                    }}
+                    className="w-full text-left block text-foreground hover:text-primary active:bg-muted/70 transition-colors py-4 px-4 text-base font-medium rounded-lg hover:bg-muted/50 min-h-[44px] flex items-center touch-manipulation"
                   >
                     My Library
                   </button>
                   <button
-                    onClick={() => handleNavigation('/settings')}
-                    className="w-full text-left block text-foreground hover:text-primary active:bg-muted/70 transition-colors py-4 px-4 text-base font-medium rounded-lg hover:bg-muted/50 min-h-[44px] flex items-center"
+                    onClick={(e) => {
+                      console.log('Mobile Settings button clicked');
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleNavigation('/settings');
+                    }}
+                    className="w-full text-left block text-foreground hover:text-primary active:bg-muted/70 transition-colors py-4 px-4 text-base font-medium rounded-lg hover:bg-muted/50 min-h-[44px] flex items-center touch-manipulation"
                   >
                     Settings
                   </button>
@@ -260,8 +271,13 @@ export function Header() {
                     </div>
                   ) : isAdmin ? (
                     <button
-                      onClick={() => handleNavigation('/admin')}
-                      className="w-full text-left flex items-center space-x-2 text-foreground hover:text-primary active:bg-muted/70 transition-colors py-4 px-4 text-base font-medium rounded-lg hover:bg-muted/50 min-h-[44px]"
+                      onClick={(e) => {
+                        console.log('Mobile Admin Panel button clicked');
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleNavigation('/admin');
+                      }}
+                      className="w-full text-left flex items-center space-x-2 text-foreground hover:text-primary active:bg-muted/70 transition-colors py-4 px-4 text-base font-medium rounded-lg hover:bg-muted/50 min-h-[44px] touch-manipulation"
                     >
                       <Shield className="w-4 h-4" />
                       <span>Admin Panel</span>
