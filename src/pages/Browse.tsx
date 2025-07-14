@@ -235,7 +235,7 @@ export default function Browse() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="border-b border-border/50 bg-background/80 backdrop-blur-sm sticky top-0 z-40">
+      <div className="hidden border-b border-border/50 bg-background/80 backdrop-blur-sm sticky top-0 z-40">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-3 sm:space-y-4 lg:space-y-0">
             {/* Title and Search */}
@@ -355,7 +355,7 @@ export default function Browse() {
         <div className="flex gap-6 lg:gap-8">
           {/* Desktop Sidebar */}
           <div className="hidden lg:block w-72 xl:w-80 flex-shrink-0">
-            <div className="sticky top-28 xl:top-32">
+            <div className="sticky top-20">
               <FilterSidebar onFilterChange={handleFilterChange} />
             </div>
           </div>
