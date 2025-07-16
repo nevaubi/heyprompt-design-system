@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Search, ArrowRight, BookMarked, Users, Star } from 'lucide-react';
+import { Search, ArrowRight, Star } from 'lucide-react';
 
 export function Hero() {
   const containerVariants = {
@@ -146,35 +146,6 @@ export function Hero() {
             </Button>
           </motion.div>
 
-          {/* Stats */}
-          <motion.div
-            variants={itemVariants}
-            className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 max-w-2xl mx-auto px-2"
-          >
-            <div className="text-center">
-              <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-xl mx-auto mb-2 sm:mb-3">
-                <BookMarked className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-              </div>
-              <div className="text-xl sm:text-2xl font-bold text-foreground">50k+</div>
-              <div className="text-xs sm:text-sm text-muted-foreground">Curated Prompts</div>
-            </div>
-            
-            <div className="text-center">
-              <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-xl mx-auto mb-2 sm:mb-3">
-                <Users className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-              </div>
-              <div className="text-xl sm:text-2xl font-bold text-foreground">10k+</div>
-              <div className="text-xs sm:text-sm text-muted-foreground">Active Users</div>
-            </div>
-            
-            <div className="text-center">
-              <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-xl mx-auto mb-2 sm:mb-3">
-                <Star className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-              </div>
-              <div className="text-xl sm:text-2xl font-bold text-foreground">4.9/5</div>
-              <div className="text-xs sm:text-sm text-muted-foreground">User Rating</div>
-            </div>
-          </motion.div>
         </motion.div>
       </div>
 
